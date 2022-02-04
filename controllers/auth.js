@@ -1,10 +1,10 @@
 const userService = require("../services/auth");
 
 exports.getLogin = async (req, res, next) => {
-  const email = "";
+  const { userInfo } = res.locals;
 
   try {
-    await userService.createUser(email);
+    await userService.createUser(userInfo);
   } catch (err) {}
 };
 

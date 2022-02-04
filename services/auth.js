@@ -1,13 +1,9 @@
 const User = require("../models/User");
 
-exports.createUser = async (email) => {
-  // 처음 로그인시에만 유저 생성
-  // 이후 로그인은 유저 생성 x
+exports.createUser = async (userInfo) => {
+  const user = await User.findOne({ email: userInfo.email }).lean().exec();
 
-  try {
-    const user = await User.findOne({ email }).lean().exec();
-
-    if (!user) {
-    }
-  } catch (err) {}
+  if (!user) {
+    return await User.create(userInfo);
+  }
 };

@@ -14,6 +14,7 @@ module.exports = {
     "prettier/prettier": "warn",
     "no-var": "error",
     "no-unused-vars": "warn",
+    "no-empty": "warn",
     "func-style": ["error", "declaration", { allowArrowFunctions: true }],
   },
 };

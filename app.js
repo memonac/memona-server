@@ -7,8 +7,7 @@ const logger = require("morgan");
 const cors = require("cors");
 
 const mongooseLoader = require("./loaders/mongooseLoader");
-const indexRouter = require("./routes/index");
-const usersRouter = require("./routes/users");
+const auth = require("./routes/auth");
 
 mongooseLoader();
 
@@ -26,8 +25,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-app.use("/", indexRouter);
-app.use("/users", usersRouter);
+app.use("/", auth);
 
 app.use(function (req, res, next) {
   next(createError(404));

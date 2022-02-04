@@ -9,8 +9,6 @@ async function connectMongodb() {
 
   const db = mongoose.connection;
 
-  console.log(123);
-
   db.on("error", console.error.bind(console, "connection error:"));
   db.once("open", console.log.bind(console, "Connected to database.."));
 }

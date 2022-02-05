@@ -11,11 +11,9 @@ exports.getMemoRoom = async (userId) => {
   }).flat(Infinity);
 
   const memoRoomInfo = memoRooms.rooms.map((room) => {
-    const { _id, name } = room;
-
     return {
-      _id,
-      name,
+      _id: room._id,
+      name: room.name,
     };
   });
 

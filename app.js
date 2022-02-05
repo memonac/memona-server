@@ -26,7 +26,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 app.use("/", auth);
-app.use("/memoRooms", memoRooms);
+app.use("/users", memoRooms);
 
 app.use(function (req, res, next) {
   next(createError(404));

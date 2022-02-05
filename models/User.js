@@ -17,6 +17,7 @@ const UserSchema = new Schema({
       ref: "MemoRoom",
     },
   ],
+  refreshToken: String,
 });
 
 module.exports = mongoose.model("User", UserSchema);

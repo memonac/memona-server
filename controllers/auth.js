@@ -64,7 +64,7 @@ exports.postSignup = async (req, res, next) => {
       result: "success",
       data: {
         userId,
-      }
+      },
     });
   } catch (err) {
     if (err.name === "MongoServerError" || err.name === "ValidationError") {

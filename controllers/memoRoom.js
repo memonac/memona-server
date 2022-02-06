@@ -146,7 +146,6 @@ exports.updateMemoRoomTitle = async (req, res, next) => {
   }
 };
 
-//DELETE /:userId/memorooms/:memoroomId
 exports.removeMemoRoom = async (req, res, next) => {
   const { userId, memoroomId } = req.params;
 

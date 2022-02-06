@@ -37,9 +37,11 @@ exports.addNewMemoRoom = async (userId, roomName) => {
     owner: userId,
     participants: [userId],
     name: roomName,
-  }).exec();;
+  }).exec();
 
-  await User.findByIdAndUpdate(userId, { $push: { rooms: newMemoRoom._id } }).exec();;
+  await User.findByIdAndUpdate(userId, {
+    $push: { rooms: newMemoRoom._id },
+  }).exec();
 };
 
 exports.updateMemoRoomTitle = async (memoRoomId, roomName) => {

@@ -7,7 +7,7 @@ const cors = require("cors");
 
 const mongooseLoader = require("./loaders/mongooseLoader");
 const auth = require("./routes/auth");
-const memoRooms = require("./routes/memoRoom");
+const memoRoom = require("./routes/memoRoom");
 
 mongooseLoader();
 
@@ -26,7 +26,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 app.use("/", auth);
-app.use("/memoRooms", memoRooms);
+app.use("/users", memoRoom);
 
 app.use(function (req, res, next) {
   next(createError(404));

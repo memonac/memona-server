@@ -3,7 +3,7 @@ const createError = require("http-errors");
 
 const memoRoomService = require("../services/memoRoom");
 
-exports.getMemoRoom = async (req, res, next) => {
+exports.getAllMemoRooms = async (req, res, next) => {
   try {
     const { userId } = req.params;
 
@@ -39,3 +39,8 @@ exports.getMemoRoom = async (req, res, next) => {
     next(createError(500, "Invalid Server Error"));
   }
 };
+
+exports.addNewMemoRoom = async (req, res, next) => {};
+exports.getMemoRoomTitle = async (req, res, next) => {};
+exports.updateMemoRoomTitle = async (req, res, next) => {};
+exports.removeMemoRoom = async (req, res, next) => {};

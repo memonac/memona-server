@@ -4,9 +4,7 @@ exports.createUser = async (userInfo) => {
   const user = await User.findOne({ email: userInfo.email }).lean().exec();
 
   if (!user) {
-    await User.create(userInfo);
-    const newUser = await User.findOne({ email: userInfo.email }).lean().exec();
-
+    const newUser = await User.create(userInfo);
     return newUser.id;
   }
 

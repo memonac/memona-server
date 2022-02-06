@@ -2,9 +2,10 @@ const express = require("express");
 const router = express.Router();
 
 const memoRoomController = require("../controllers/memoRoom");
+const checkInputValue = require("./middlewares/checkInputValue");
 
 router.get("/:userId/memorooms", memoRoomController.getAllMemoRooms);
-router.post("/:userId/memorooms", memoRoomController.addNewMemoRoom);
+router.post("/:userId/memorooms", checkInputValue, memoRoomController.addNewMemoRoom);
 router.get("/:userId/memorooms/:memoroomId", memoRoomController.getMemoRoomTitle);
 router.put("/:userId/memorooms/:memoroomId", memoRoomController.updateMemoRoomTitle);
 router.delete("/:userId/memorooms/:memoroomId", memoRoomController.removeMemoRoom);

@@ -15,10 +15,13 @@ exports.getLogin = async (req, res, next) => {
   }
 
   try {
-    await userService.createUser(userInfo);
+    const userId = await userService.createUser(userInfo);
 
     res.json({
       result: "success",
+      data: {
+        userId,
+      },
     });
   } catch (err) {
     if (err.name === "MongoServerError" || err.name === "ValidationError") {
@@ -37,7 +40,7 @@ exports.getLogin = async (req, res, next) => {
 };
 
 exports.postSignup = async (req, res, next) => {
-  const { data } = req.body;
+  const { name } = req.body;
 
   const { userInfo, accessToken, refreshToken } = res.locals;
 
@@ -51,13 +54,16 @@ exports.postSignup = async (req, res, next) => {
     userInfo.refreshToken = refreshToken;
   }
 
-  userInfo.name = data.name;
+  userInfo.name = name;
 
   try {
-    await userService.createUser(userInfo);
+    const userId = await userService.createUser(userInfo);
 
     res.json({
       result: "success",
+      data: {
+        userId,
+      }
     });
   } catch (err) {
     if (err.name === "MongoServerError" || err.name === "ValidationError") {

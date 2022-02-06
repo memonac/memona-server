@@ -4,6 +4,11 @@ exports.createUser = async (userInfo) => {
   const user = await User.findOne({ email: userInfo.email }).lean().exec();
 
   if (!user) {
-    return await User.create(userInfo);
+    await User.create(userInfo);
+    const newUser = await User.findOne({ email: userInfo.email }).lean().exec();
+
+    return newUser.id;
   }
+
+  return user._id;
 };

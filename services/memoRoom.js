@@ -1,7 +1,6 @@
 const User = require("../models/User");
 const Memo = require("../models/Memo");
 const MemoRoom = require("../models/MemoRoom");
-const createError = require("http-errors");
 const Chat = require("../models/Chat");
 
 exports.getAllMemoRoom = async (userId) => {
@@ -19,7 +18,7 @@ exports.getAllMemoRoom = async (userId) => {
   const memoroomInfo = memoRooms.rooms.map((room) => {
     const memoTags = room.memos.map((memo) => memo.tags);
     const refinedRoom = {};
-    
+
     allTags.concat(memoTags);
 
     refinedRoom[room._id] = {

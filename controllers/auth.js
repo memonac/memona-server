@@ -75,7 +75,7 @@ exports.postSignup = async (req, res, next) => {
   }
 };
 
-exports.getLogout = async (req, res, next) => {
+exports.getLogout = (req, res, next) => {
   try {
     res.clearCookie("token");
 
@@ -83,17 +83,6 @@ exports.getLogout = async (req, res, next) => {
       result: "success",
     });
   } catch (err) {
-    if (err.name === "MongoServerError" || err.name === "ValidationError") {
-      res.status(400).json({
-        result: "fail",
-        error: {
-          message: "Database Error",
-        },
-      });
-
-      return;
-    }
-
     next(createError(500, "Invalid Server Error"));
   }
 };

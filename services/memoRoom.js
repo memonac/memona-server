@@ -5,17 +5,13 @@ const Chat = require("../models/Chat");
 
 exports.getAllMemoRoom = async (userId) => {
   const memoRooms = await User.findById(userId).populate("rooms");
-  const memos = await Memo.find().lean().exec();
-
-  const allTags = memos
-    .map((memo) => {
-      return memo.tags;
-    })
-    .flat(Infinity);
+  const allTags = [];
 
   const memoRoomInfo = memoRooms.rooms.map(async (room) => {
     const targetMemoRoom = await MemoRoom.findById(room._id).populate("memos");
     const memoTags = targetMemoRoom.memos.map((memo) => memo.tags);
+
+    allTags.concat(memoTags);
 
     const refinedRoom = {};
     refinedRoom[room._id] = {

@@ -6,8 +6,7 @@ const checkInputValue = require("./middlewares/checkInputValue");
 
 router.get("/:userId/memorooms", memoRoomController.getAllMemoRooms);
 router.post("/:userId/memorooms", checkInputValue, memoRoomController.addNewMemoRoom);
-router.get("/:userId/memorooms/:memoroomId", memoRoomController.getMemoRoomTitle);
-router.put("/:userId/memorooms/:memoroomId", memoRoomController.updateMemoRoomTitle);
+router.put("/:userId/memorooms/:memoroomId", checkInputValue, memoRoomController.updateMemoRoomTitle);
 router.delete("/:userId/memorooms/:memoroomId", memoRoomController.removeMemoRoom);
 // router.post("/:userId/memorooms/:memoroomId/memo", memoRoomController.getMemoRoom);
 // router.get("/:userId/memorooms/:memoroomId/memo/:memoId", memoRoomController.getMemoRoom);

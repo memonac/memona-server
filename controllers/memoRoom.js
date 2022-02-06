@@ -13,21 +13,21 @@ exports.getAllMemoRooms = async (req, res, next) => {
       res.status(400).json({
         result: "fail",
         error: {
-          message: "Validation Error",
+          message: "Not Valid ObjectId",
         },
       });
 
       return;
     }
 
-    const memoRoom = await memoRoomService.getMemoRoom(userId);
+    const memoRoom = await memoRoomService.getAllMemoRoom(userId);
 
     res.json({
       result: "success",
       data: memoRoom,
     });
   } catch (err) {
-    if (err.name === "MongoServerError" || err.name === "ValidationError") {
+    if (err.name === "MongoServerError") {
       res.status(400).json({
         result: "fail",
         error: {
@@ -42,7 +42,6 @@ exports.getAllMemoRooms = async (req, res, next) => {
   }
 };
 
-//POST /:userId/memorooms
 exports.addNewMemoRoom = async (req, res, next) => {
   const { userId } = req.params;
   const { name } = req.body;
@@ -53,7 +52,7 @@ exports.addNewMemoRoom = async (req, res, next) => {
     res.status(400).json({
       result: "fail",
       error: {
-        message: "Validation Error",
+        message: "Not Valid ObjectId",
       },
     });
 
@@ -95,14 +94,56 @@ exports.addNewMemoRoom = async (req, res, next) => {
   }
 };
 
-// GET /:userId/memorooms/:memoroomId
-exports.getMemoRoomTitle = async (req, res, next) => {
-  const { userId, memoroomId } = req.params;
-};
-
-//PUT /:userId/memorooms/:memoroomId
 exports.updateMemoRoomTitle = async (req, res, next) => {
   const { userId, memoroomId } = req.params;
+  const { name } = req.body;
+
+  const errors = validationResult(req);
+
+  if (!ObjectId.isValid(userId) || !ObjectId.isValid(memoroomId)) {
+    res.status(400).json({
+      result: "fail",
+      error: {
+        message: "Not Valid ObjectId",
+      },
+    });
+
+    return;
+  }
+
+  if (!errors.isEmpty()) {
+    const inputError = errors.errors[0];
+
+    res.status(400).json({
+      result: "fail",
+      error: {
+        message: inputError.msg,
+      },
+    });
+
+    return;
+  }
+
+  try {
+    await memoRoomService.updateMemoRoomTitle(memoroomId, name);
+
+    res.json({
+      result: "success",
+    });
+  } catch (err) {
+    if (err.name === "MongoServerError") {
+      res.status(400).json({
+        result: "fail",
+        error: {
+          message: "Database Error",
+        },
+      });
+
+      return;
+    }
+
+    next(createError(500, "Invalid Server Error"));
+  }
 };
 
 //DELETE /:userId/memorooms/:memoroomId

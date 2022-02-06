@@ -2,9 +2,9 @@ const User = require("../models/User");
 const Memo = require("../models/Memo");
 const MemoRoom = require("../models/MemoRoom");
 
-exports.getMemoRoom = async (userId) => {
+exports.getAllMemoRoom = async (userId) => {
   const memoRooms = await User.findById(userId).populate("rooms");
-  const memos = await Memo.find();
+  const memos = await Memo.find().lean().exec();
 
   const allTags = memos
     .map((memo) => {
@@ -12,13 +12,22 @@ exports.getMemoRoom = async (userId) => {
     })
     .flat(Infinity);
 
-  const memoRoomInfo = memoRooms.rooms.map((room) => {
-    return { _id: room._id, name: room.name };
+  const memoRoomInfo = memoRooms.rooms.map(async (room) => {
+    const targetMemoRoom = await MemoRoom.findById(room._id).populate("memos");
+    const memoTags = targetMemoRoom.memos.map((memo) => memo.tags);
+
+    const refinedRoom = {};
+    refinedRoom[room._id] = {
+      name: room.name,
+      tags: Array.from(new Set(memoTags)),
+    };
+
+    return refinedRoom;
   });
 
   return {
     tags: Array.from(new Set(allTags)),
-    memoRooms: memoRoomInfo,
+    memoRoom: memoRoomInfo,
   };
 };
 
@@ -27,7 +36,11 @@ exports.addNewMemoRoom = async (userId, roomName) => {
     owner: userId,
     participants: [userId],
     name: roomName,
-  });
+  }).exec();;
 
-  await User.findByIdAndUpdate(userId, { $push: { rooms: newMemoRoom._id } });
+  await User.findByIdAndUpdate(userId, { $push: { rooms: newMemoRoom._id } }).exec();;
+};
+
+exports.updateMemoRoomTitle = async (memoRoomId, roomName) => {
+  await MemoRoom.findByIdAndUpdate(memoRoomId, { name: roomName }).exec();
 };

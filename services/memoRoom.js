@@ -1,19 +1,27 @@
 const User = require("../models/User");
 const Memo = require("../models/Memo");
 const MemoRoom = require("../models/MemoRoom");
+const createError = require("http-errors");
 const Chat = require("../models/Chat");
 
 exports.getAllMemoRoom = async (userId) => {
-  const memoRooms = await User.findById(userId).populate("rooms");
+  const memoRooms = await User.findById(userId).populate({
+    path: "rooms",
+    populate: { path: "memos" },
+  });
+
+  if (!Object.keys(memoRooms).length) {
+    return;
+  }
+
   const allTags = [];
 
-  const memoRoomInfo = memoRooms.rooms.map(async (room) => {
-    const targetMemoRoom = await MemoRoom.findById(room._id).populate("memos");
-    const memoTags = targetMemoRoom.memos.map((memo) => memo.tags);
-
+  const memoroomInfo = memoRooms.rooms.map((room) => {
+    const memoTags = room.memos.map((memo) => memo.tags);
+    const refinedRoom = {};
+    
     allTags.concat(memoTags);
 
-    const refinedRoom = {};
     refinedRoom[room._id] = {
       name: room.name,
       tags: Array.from(new Set(memoTags)),
@@ -24,7 +32,7 @@ exports.getAllMemoRoom = async (userId) => {
 
   return {
     tags: Array.from(new Set(allTags)),
-    memoRoom: memoRoomInfo,
+    memoRoom: memoroomInfo,
   };
 };
 

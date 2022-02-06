@@ -1,9 +1,22 @@
+const { Mongoose } = require("mongoose");
 const createError = require("http-errors");
+
 const memoRoomService = require("../services/memoRoom");
 
 exports.getMemoRoom = async (req, res, next) => {
   try {
     const { userId } = req.params;
+
+    if (!Mongoose.Types.ObjectId.isValid(userId)) {
+      res.status(400).json({
+        result: "fail",
+        error: {
+          message: "Validation Error",
+        },
+      });
+
+      return;
+    }
 
     const memoRoom = await memoRoomService.getMemoRoom(userId);
 
@@ -16,7 +29,7 @@ exports.getMemoRoom = async (req, res, next) => {
       res.status(400).json({
         result: "fail",
         error: {
-          message: "Database Error"
+          message: "Database Error",
         },
       });
 

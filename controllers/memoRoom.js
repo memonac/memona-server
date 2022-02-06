@@ -149,4 +149,36 @@ exports.updateMemoRoomTitle = async (req, res, next) => {
 //DELETE /:userId/memorooms/:memoroomId
 exports.removeMemoRoom = async (req, res, next) => {
   const { userId, memoroomId } = req.params;
+
+  if (!ObjectId.isValid(userId) || !ObjectId.isValid(memoroomId)) {
+    res.status(400).json({
+      result: "fail",
+      error: {
+        message: "Not Valid ObjectId",
+      },
+    });
+
+    return;
+  }
+
+  try {
+    await memoRoomService.removeMemoRoom(memoroomId);
+
+    res.json({
+      result: "success",
+    });
+  } catch (err) {
+    if (err.name === "MongoServerError") {
+      res.status(400).json({
+        result: "fail",
+        error: {
+          message: "Database Error",
+        },
+      });
+
+      return;
+    }
+
+    next(createError(500, "Invalid Server Error"));
+  }
 };

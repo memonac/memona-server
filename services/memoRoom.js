@@ -1,6 +1,7 @@
 const User = require("../models/User");
 const Memo = require("../models/Memo");
 const MemoRoom = require("../models/MemoRoom");
+const Chat = require("../models/Chat");
 
 exports.getAllMemoRoom = async (userId) => {
   const memoRooms = await User.findById(userId).populate("rooms");
@@ -43,4 +44,11 @@ exports.addNewMemoRoom = async (userId, roomName) => {
 
 exports.updateMemoRoomTitle = async (memoRoomId, roomName) => {
   await MemoRoom.findByIdAndUpdate(memoRoomId, { name: roomName }).exec();
+};
+
+exports.removeMemoRoom = async (memoRoomId) => {
+  await Memo.deleteMany({ room: memoRoomId }).exec();
+  await Chat.deleteMany({ room: memoRoomId }).exec();
+  await User.updateMany({}, { $pull: { rooms: memoRoomId } }).exec();
+  await MemoRoom.findByIdAndRemove(memoRoomId).exec();
 };

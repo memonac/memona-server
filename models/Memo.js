@@ -2,6 +2,10 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
 const MemoSchema = new Schema({
+  room: {
+    type: Schema.Types.ObjectId,
+    ref: "MemoRoom",
+  },
   author: {
     type: Schema.Types.ObjectId,
     required: [true, "author must be require"],

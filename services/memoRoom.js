@@ -31,16 +31,18 @@ exports.getAllMemoRoom = async (userId) => {
 
   return {
     tags: Array.from(new Set(allTags)),
-    memoRoom: memoroomInfo,
+    memoRooms: memoroomInfo,
   };
 };
 
 exports.addNewMemoRoom = async (userId, roomName) => {
+  console.log(userId, roomName);
+
   const newMemoRoom = await MemoRoom.create({
     owner: userId,
     participants: [userId],
     name: roomName,
-  }).exec();
+  });
 
   await User.findByIdAndUpdate(userId, {
     $push: { rooms: newMemoRoom._id },

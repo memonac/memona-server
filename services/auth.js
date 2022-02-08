@@ -6,8 +6,14 @@ exports.createUser = async (userInfo) => {
   if (!user) {
     const newUser = await User.create(userInfo);
 
-    return newUser._id;
+    return {
+      id: newUser._id,
+      name: newUser.name,
+    };
   }
 
-  return user._id;
+  return {
+    id: user._id,
+    name: user.name,
+  };
 };

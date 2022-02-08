@@ -164,10 +164,11 @@ exports.removeMemoRoom = async (req, res, next) => {
   }
 
   try {
-    await memoRoomService.removeMemoRoom(memoroomId);
+    const newMemoRooms = await memoRoomService.removeMemoRoom(userId, memoroomId);
 
     res.json({
       result: "success",
+      data: newMemoRooms,
     });
   } catch (err) {
     if (err.name === "MongoServerError") {

@@ -1,6 +1,6 @@
 const createHttpError = require("http-errors");
 const jwt = require("jsonwebtoken");
-const nodemailer = require("nodemailer");
+
 const transporter = require("../configs/nodemailer");
 
 exports.postMail = async (req, res, next) => {
@@ -31,7 +31,7 @@ exports.postMail = async (req, res, next) => {
       </div>`,
     };
 
-    const send = await transporter.sendMail(message);
+    await transporter.sendMail(message);
 
     return res.json({
       result: "success",

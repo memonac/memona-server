@@ -1,4 +1,4 @@
-const createHttpError = require("http-errors");
+const creatError = require("http-errors");
 const jwt = require("jsonwebtoken");
 
 const transporter = require("../configs/nodemailer");
@@ -8,13 +8,13 @@ exports.postMail = async (req, res, next) => {
 
   try {
     const { memoroomId } = req.params;
-    const token = jwt.sign(email, process.env.SECRET_KEY, { expiresIn: "1h" });
-    const url = `http://localhost:3000/${memoroomId}/invite?token=${token}`;
+    const token = jwt.sign({ email }, process.env.SECRET_KEY, { expiresIn: "1h" });
+    const url = `${process.env.PATH}/${memoroomId}/${process.env.INVITE_URL}?token=${token}`;
 
     const message = {
       from: process.env.GOOGLE_MAIL,
-      to: { email },
-      subject: "memonaC에서 당신을 초대합니다",
+      to: email,
+      subject: "memona C에서 당신을 초대합니다",
       html: `<div
       style='
       text-align: center; 
@@ -24,7 +24,8 @@ exports.postMail = async (req, res, next) => {
       padding: 20px;
       box-shadow: 1px 1px 3px 0px #999;
       '>
-      <h2>안녕하세요</h2>
+      <h2>안녕하세요.</h2>
+      <h2>memona C에서 당신을 초대합니다.</h2>
       <br />
       <p>아래 링크를 누르면 초대된 Memo Room으로 이동합니다.</p>
       <a href=${url}>초대링크</a>
@@ -37,6 +38,6 @@ exports.postMail = async (req, res, next) => {
       result: "success",
     });
   } catch (err) {
-    next(createHttpError(500, "Invalid Server Error"));
+    next(creatError(500, "Invalid Server Error"));
   }
 };

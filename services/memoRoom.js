@@ -15,10 +15,8 @@ exports.getAllMemoRoom = async (userId) => {
 
   targetUser.rooms.forEach((room) => {
     const memoTags = room.memos.map((memo) => memo.tags);
-    console.log(memoTags);
 
     allTags.push(...memoTags);
-    console.log(allTags);
 
     memoroomInfo[room._id] = {
       name: room.name,
@@ -42,6 +40,8 @@ exports.addNewMemoRoom = async (userId, roomName) => {
   await User.findByIdAndUpdate(userId, {
     $push: { rooms: newMemoRoom._id },
   }).exec();
+
+  return newMemoRoom._id;
 };
 
 exports.updateMemoRoomTitle = async (memoRoomId, roomName) => {

@@ -73,10 +73,13 @@ exports.addNewMemoRoom = async (req, res, next) => {
   }
 
   try {
-    await memoRoomService.addNewMemoRoom(userId, name);
+    const newMemoRoomId = await memoRoomService.addNewMemoRoom(userId, name);
 
     res.json({
       result: "success",
+      data: {
+        newMemoRoomId,
+      }
     });
   } catch (err) {
     if (err.name === "MongoServerError") {

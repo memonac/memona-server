@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const memoRoomController = require("../controllers/memoRoom");
+const nodemailerController = require("../controllers/nodemailer");
 const checkInputValue = require("./middlewares/checkInputValue");
 
 router.get("/:userId/memorooms", memoRoomController.getAllMemoRooms);
@@ -18,6 +19,11 @@ router.put(
 router.delete(
   "/:userId/memorooms/:memoroomId",
   memoRoomController.removeMemoRoom
+);
+
+router.get(
+  "/:userId/memorooms/:memoroomId/invite/:token",
+  nodemailerController.postMail
 );
 // router.post("/:userId/memorooms/:memoroomId/memo", memoRoomController.getMemoRoom);
 // router.get("/:userId/memorooms/:memoroomId/memo/:memoId", memoRoomController.getMemoRoom);

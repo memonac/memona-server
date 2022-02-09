@@ -96,6 +96,7 @@ exports.postVerifyToken = async (req, res, next) => {
 
     res.json({
       result: "success",
+      data: user,
     });
   } catch (err) {
     if (err.name === "TokenExpiredError") {

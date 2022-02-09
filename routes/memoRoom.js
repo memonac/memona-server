@@ -25,9 +25,13 @@ router.delete(
   "/:userId/memorooms/:memoroomId",
   memoRoomController.removeMemoRoom
 );
-router.get(
-  "/:userId/memorooms/:memoroomId/invite/:token",
+router.post(
+  "/:userId/memorooms/:memoroomId/invite",
   nodemailerController.postMail
+);
+router.post(
+  "/:userId/memorooms/:memoroomId/verify/:token",
+  nodemailerController.postVerify
 );
 // router.post("/:userId/memorooms/:memoroomId/memo", memoRoomController.getMemoRoom);
 // router.get("/:userId/memorooms/:memoroomId/memo/:memoId", memoRoomController.getMemoRoom);

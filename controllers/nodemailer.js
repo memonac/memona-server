@@ -1,4 +1,4 @@
-const creatError = require("http-errors");
+const createError = require("http-errors");
 const jwt = require("jsonwebtoken");
 
 const transporter = require("../configs/nodemailer");
@@ -11,7 +11,7 @@ exports.postMail = async (req, res, next) => {
     const { memoroomId } = req.params;
     const token = jwt.sign({ email }, process.env.SECRET_KEY, { expiresIn: "1h" });
     const url = `${process.env.PATH}/${memoroomId}/${process.env.INVITE_URL}?token=${token}`;
-console.log(token);
+
     const message = {
       from: process.env.GOOGLE_MAIL,
       to: email,
@@ -39,7 +39,18 @@ console.log(token);
       result: "success",
     });
   } catch (err) {
-    next(creatError(500, "Invalid Server Error"));
+    if (err.code === "EENVELOPE") {
+      res.status(400).json({
+        result: "fail",
+        error: {
+          message: "Check the email",
+        },
+      });
+
+      return;
+    }
+
+    next(createError(500, "Invalid Server Error"));
   }
 };
 
@@ -50,8 +61,6 @@ exports.postVerify = async (req, res, next) => {
   try {
     const decoded = await jwt.verify(token, process.env.SECRET_KEY);
     const email = decoded.email;
-    const user = await User.findOne({ email: email }).lean().exec();
-    console.log(user);
 
     if (!decoded) {
       res.status(400).json({
@@ -63,6 +72,7 @@ exports.postVerify = async (req, res, next) => {
 
       return;
     }
+    const user = await User.findOne({ email: email }).lean().exec();
 
     if (!user) {
       res.status(400).json({
@@ -83,6 +93,6 @@ exports.postVerify = async (req, res, next) => {
       result: "success",
     });
   } catch (err) {
-    console.log(err)
+    next(createError(500, "Invalid Server Error"));
   }
-}
+};

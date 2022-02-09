@@ -3,9 +3,25 @@ const jwt = require("jsonwebtoken");
 
 const nodemailerService = require("../services/nodemailer");
 const transporter = require("../configs/nodemailer");
+const { validationResult } = require("express-validator");
 
 exports.postSendMail = async (req, res, next) => {
   const { email } = req.body;
+
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    const inputError = errors.errors[0];
+
+    res.status(400).json({
+      result: "fail",
+      error: {
+        message: inputError.msg,
+      },
+    });
+
+    return;
+  }
 
   try {
     const { memoroomId } = req.params;
@@ -35,27 +51,22 @@ exports.postSendMail = async (req, res, next) => {
       </div>`,
     };
 
-    transporter.sendMail(message, (err) => {
-      if (err) {
-        next(err);
-      } else {
-        res.json({
-          result: "success",
-        });
-      }
+    await transporter.sendMail(message);
+
+    res.json({
+      result: "success",
     });
   } catch (err) {
-    if (err.code === "EENVELOPE") {
+    if (err.name === "Error") {
       res.status(400).json({
         result: "fail",
         error: {
-          message: "Check the email",
+          message: "Failed to send mail",
         },
       });
 
       return;
     }
-
     next(createError(500, "Invalid Server Error"));
   }
 };

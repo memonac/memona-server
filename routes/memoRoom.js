@@ -5,6 +5,7 @@ const memoRoomController = require("../controllers/memoRoom");
 const memoRoomDetailController = require("../controllers/memoRoomDetail");
 const nodemailerController = require("../controllers/nodemailer");
 const checkInputValue = require("./middlewares/checkInputValue");
+const checkEmail = require("./middlewares/checkEmail");
 
 router.get("/:userId/memorooms", memoRoomController.getAllMemoRooms);
 router.post(
@@ -27,6 +28,7 @@ router.delete(
 );
 router.post(
   "/:userId/memorooms/:memoroomId/invite",
+  checkEmail,
   nodemailerController.postSendMail
 );
 router.post(

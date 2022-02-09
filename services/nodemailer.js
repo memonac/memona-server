@@ -2,9 +2,7 @@ const MemoRoom = require("../models/MemoRoom");
 const User = require("../models/User");
 
 exports.verifyUser = async (email) => {
-  const user = await User.findOne({ email: email }).lean().exec();
-
-  return user;
+  return await User.findOne({ email: email }).lean().exec();
 };
 
 exports.updateMemoRoom = async (userId, memoroomId) => {

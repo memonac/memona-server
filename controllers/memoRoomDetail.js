@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const { ObjectId } = mongoose.Types;
-const createHttpError = require("http-errors");
+const createError = require("http-errors");
 
 const memoRoomDetailService = require("../services/memoRoomDetail");
 
@@ -36,8 +36,10 @@ exports.getAllMemoRoomDetail = async (req, res, next) => {
           message: "Database Error",
         },
       });
+
+      return;
     }
 
-    next(createHttpError(500, "Invalid Server Error"));
+    next(createError(500, "Invalid Server Error"));
   }
 };

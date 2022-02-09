@@ -27,11 +27,11 @@ router.delete(
 );
 router.post(
   "/:userId/memorooms/:memoroomId/invite",
-  nodemailerController.postMail
+  nodemailerController.postSendMail
 );
 router.post(
   "/:userId/memorooms/:memoroomId/verify/:token",
-  nodemailerController.postVerify
+  nodemailerController.postVerifyToken
 );
 // router.post("/:userId/memorooms/:memoroomId/memo", memoRoomController.getMemoRoom);
 // router.get("/:userId/memorooms/:memoroomId/memo/:memoId", memoRoomController.getMemoRoom);

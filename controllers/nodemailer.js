@@ -1,15 +1,17 @@
 const createError = require("http-errors");
 const jwt = require("jsonwebtoken");
 
+const nodemailerService = require("../services/nodemailer");
 const transporter = require("../configs/nodemailer");
-const User = require("../models/User");
 
-exports.postMail = async (req, res, next) => {
+exports.postSendMail = async (req, res, next) => {
   const { email } = req.body;
 
   try {
     const { memoroomId } = req.params;
-    const token = jwt.sign({ email }, process.env.SECRET_KEY, { expiresIn: "1h" });
+    const token = jwt.sign({ email }, process.env.SECRET_KEY, {
+      expiresIn: "1h",
+    });
     const url = `${process.env.PATH}/${memoroomId}/${process.env.INVITE_URL}?token=${token}`;
 
     const message = {
@@ -33,10 +35,14 @@ exports.postMail = async (req, res, next) => {
       </div>`,
     };
 
-    await transporter.sendMail(message);
-
-    return res.json({
-      result: "success",
+    transporter.sendMail(message, (err) => {
+      if (err) {
+        next(err);
+      } else {
+        res.json({
+          result: "success",
+        });
+      }
     });
   } catch (err) {
     if (err.code === "EENVELOPE") {
@@ -54,12 +60,12 @@ exports.postMail = async (req, res, next) => {
   }
 };
 
-exports.postVerify = async (req, res, next) => {
+exports.postVerifyToken = async (req, res, next) => {
   const { token } = req.body;
   const { memoroomId } = req.params;
 
   try {
-    const decoded = await jwt.verify(token, process.env.SECRET_KEY);
+    const decoded = jwt.verify(token, process.env.SECRET_KEY);
     const email = decoded.email;
 
     if (!decoded) {
@@ -72,27 +78,27 @@ exports.postVerify = async (req, res, next) => {
 
       return;
     }
-    const user = await User.findOne({ email: email }).lean().exec();
+
+    const user = await nodemailerService.verifyUser(email);
 
     if (!user) {
       res.status(400).json({
         result: "fail",
         error: {
-          message: "Not fond user",
+          message: "Not found user",
         },
       });
 
       return;
     }
 
-    await User.findByIdAndUpdate(user._id, {
-      $push: { rooms: memoroomId },
-    });
+    await nodemailerService.updateMemoRoom(user, memoroomId);
 
     res.json({
       result: "success",
     });
   } catch (err) {
+    console.log(err)
     next(createError(500, "Invalid Server Error"));
   }
 };

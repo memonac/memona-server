@@ -1,3 +1,4 @@
+const MemoRoom = require("../models/MemoRoom");
 const User = require("../models/User");
 
 exports.verifyUser = async (email) => {
@@ -9,5 +10,9 @@ exports.verifyUser = async (email) => {
 exports.updateMemoRoom = async ({ user, memoroomId }) => {
   await User.findByIdAndUpdate(user._id, {
     $push: { rooms: memoroomId },
+  });
+
+  await MemoRoom.findByIdAndUpdate(memoroomId, {
+    $push: { participants: user._id },
   });
 };

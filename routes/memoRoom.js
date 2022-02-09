@@ -5,6 +5,7 @@ const memoRoomController = require("../controllers/memoRoom");
 const memoRoomDetailController = require("../controllers/memoRoomDetail");
 const nodemailerController = require("../controllers/nodemailer");
 const checkInputValue = require("./middlewares/checkInputValue");
+const checkNewMemoInputValue = require("./middlewares/checkNewMemoInputValue");
 const checkEmail = require("./middlewares/checkEmail");
 
 router.get("/:userId/memorooms", memoRoomController.getAllMemoRooms);
@@ -35,7 +36,8 @@ router.post(
   "/:userId/memorooms/:memoroomId/verify/:token",
   nodemailerController.postVerifyToken
 );
-// router.post("/:userId/memorooms/:memoroomId/memo", memoRoomController.getMemoRoom);
+
+router.post("/:userId/memorooms/:memoroomId/memo", checkNewMemoInputValue, memoRoomDetailController.addNewMemo);
 // router.get("/:userId/memorooms/:memoroomId/memo/:memoId", memoRoomController.getMemoRoom);
 // router.put("/:userId/memorooms/:memoroomId/:memoId", memoRoomController.getMemoRoom);
 // router.delete("/:userId/memorooms/:memoroomId/:memoId", memoRoomController.getMemoRoom);

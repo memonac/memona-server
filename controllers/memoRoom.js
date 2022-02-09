@@ -4,6 +4,7 @@ const createError = require("http-errors");
 const { validationResult } = require("express-validator");
 
 const memoRoomService = require("../services/memoRoom");
+const memoRoomDetail = require("../services/memoRoomDetail");
 
 exports.getAllMemoRooms = async (req, res, next) => {
   try {

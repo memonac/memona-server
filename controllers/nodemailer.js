@@ -116,7 +116,7 @@ exports.postVerifyToken = async (req, res, next) => {
 
       return;
     }
-console.log(err)
+
     next(createError(500, "Invalid Server Error"));
   }
 };

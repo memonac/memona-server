@@ -2,6 +2,7 @@ const creatError = require("http-errors");
 const jwt = require("jsonwebtoken");
 
 const transporter = require("../configs/nodemailer");
+const User = require("../models/User");
 
 exports.postMail = async (req, res, next) => {
   const { email } = req.body;
@@ -10,7 +11,7 @@ exports.postMail = async (req, res, next) => {
     const { memoroomId } = req.params;
     const token = jwt.sign({ email }, process.env.SECRET_KEY, { expiresIn: "1h" });
     const url = `${process.env.PATH}/${memoroomId}/${process.env.INVITE_URL}?token=${token}`;
-
+console.log(token);
     const message = {
       from: process.env.GOOGLE_MAIL,
       to: email,
@@ -41,3 +42,47 @@ exports.postMail = async (req, res, next) => {
     next(creatError(500, "Invalid Server Error"));
   }
 };
+
+exports.postVerify = async (req, res, next) => {
+  const { token } = req.body;
+  const { memoroomId } = req.params;
+
+  try {
+    const decoded = await jwt.verify(token, process.env.SECRET_KEY);
+    const email = decoded.email;
+    const user = await User.findOne({ email: email }).lean().exec();
+    console.log(user);
+
+    if (!decoded) {
+      res.status(400).json({
+        result: "fail",
+        error: {
+          message: "Token fail verified",
+        },
+      });
+
+      return;
+    }
+
+    if (!user) {
+      res.status(400).json({
+        result: "fail",
+        error: {
+          message: "Not fond user",
+        },
+      });
+
+      return;
+    }
+
+    await User.findByIdAndUpdate(user._id, {
+      $push: { rooms: memoroomId },
+    });
+
+    res.json({
+      result: "success",
+    });
+  } catch (err) {
+    console.log(err)
+  }
+}

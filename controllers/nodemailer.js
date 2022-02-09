@@ -98,7 +98,17 @@ exports.postVerifyToken = async (req, res, next) => {
       result: "success",
     });
   } catch (err) {
-    console.log(err)
+    if (err.name === "TokenExpiredError") {
+      res.status(400).json({
+        result: "fail",
+        error: {
+          message: "Expired invite token",
+        },
+      });
+
+      return;
+    }
+
     next(createError(500, "Invalid Server Error"));
   }
 };

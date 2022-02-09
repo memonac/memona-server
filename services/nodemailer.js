@@ -7,12 +7,12 @@ exports.verifyUser = async (email) => {
   return user;
 };
 
-exports.updateMemoRoom = async ({ user, memoroomId }) => {
-  await User.findByIdAndUpdate(user._id, {
+exports.updateMemoRoom = async (userId, memoroomId) => {
+  await User.findByIdAndUpdate(userId, {
     $push: { rooms: memoroomId },
   });
 
   await MemoRoom.findByIdAndUpdate(memoroomId, {
-    $push: { participants: user._id },
+    $push: { participants: userId },
   });
 };

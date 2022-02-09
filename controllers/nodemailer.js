@@ -91,12 +91,19 @@ exports.postVerifyToken = async (req, res, next) => {
 
       return;
     }
+    const userId = user._id;
 
-    await nodemailerService.updateMemoRoom(user, memoroomId);
+    await nodemailerService.updateMemoRoom(userId, memoroomId);
+
+    const userInfo = {};
+    userInfo[userId] = {
+      name: user.name,
+      email: user.email,
+    };
 
     res.json({
       result: "success",
-      data: user,
+      data: userInfo,
     });
   } catch (err) {
     if (err.name === "TokenExpiredError") {
@@ -109,7 +116,7 @@ exports.postVerifyToken = async (req, res, next) => {
 
       return;
     }
-
+console.log(err)
     next(createError(500, "Invalid Server Error"));
   }
 };

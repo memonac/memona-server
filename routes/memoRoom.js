@@ -42,8 +42,13 @@ router.post(
   checkNewMemoInputValue,
   memoRoomDetailController.addNewMemo
 );
+
+router.delete(
+  "/:userId/memorooms/:memoroomId/memos/:memoId",
+  memoRoomDetailController.deleteMemo
+);
+
 // router.get("/:userId/memorooms/:memoroomId/memo/:memoId", memoRoomController.getMemoRoom);
 // router.put("/:userId/memorooms/:memoroomId/:memoId", memoRoomController.getMemoRoom);
-// router.delete("/:userId/memorooms/:memoroomId/:memoId", memoRoomController.getMemoRoom);
 
 module.exports = router;

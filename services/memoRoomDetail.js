@@ -21,10 +21,25 @@ exports.getDetailInfo = async (userId, memoroomId) => {
     };
   });
 
+  const refinedMemos = {};
+
+  memoRooms.memos.forEach((memo) => {
+    refinedMemos[memo._id] = {
+      author: memo.author,
+      color: memo.color,
+      content: memo.content,
+      formType: memo.formType,
+      location: memo.location,
+      room: memo.room,
+      size: memo.size,
+      tags: memo.tags,
+    };
+  });
+
   return {
     owner: userInfo,
     participants: participants,
-    memos: memoRooms.memos,
+    memos: refinedMemos,
     slackToken: memoRooms.slackToken,
     name: memoRooms.name,
   };
@@ -44,7 +59,7 @@ exports.addNewMemo = async ({
     author: userId,
     formType: memoType,
     content: imageFile || "",
-    location: [0, 500],
+    location: [500, 0],
     size: [250, 250],
     color: memoColor,
     alarmDate: alarmDateInfo,
@@ -56,4 +71,11 @@ exports.addNewMemo = async ({
   });
 
   return newMemo;
+};
+
+exports.deleteMemo = async ({ memoroomId, memoId }) => {
+  await Memo.findByIdAndDelete(memoId);
+  await MemoRoom.findByIdAndUpdate(memoroomId, {
+    $pull: { memos: memoId },
+  });
 };

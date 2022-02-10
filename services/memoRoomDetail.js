@@ -51,7 +51,9 @@ exports.addNewMemo = async ({
     tags: memoTags.split(" "),
   });
 
-  await MemoRoom.findByIdAndUpdate(memoroomId, { $push: { memos: newMemo._id } });
+  await MemoRoom.findByIdAndUpdate(memoroomId, {
+    $push: { memos: newMemo._id },
+  });
 
   return newMemo;
 };

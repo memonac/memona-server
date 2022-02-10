@@ -37,7 +37,11 @@ router.post(
   nodemailerController.postVerifyToken
 );
 
-router.post("/:userId/memorooms/:memoroomId/memo", checkNewMemoInputValue, memoRoomDetailController.addNewMemo);
+router.post(
+  "/:userId/memorooms/:memoroomId/memo",
+  checkNewMemoInputValue,
+  memoRoomDetailController.addNewMemo
+);
 // router.get("/:userId/memorooms/:memoroomId/memo/:memoId", memoRoomController.getMemoRoom);
 // router.put("/:userId/memorooms/:memoroomId/:memoId", memoRoomController.getMemoRoom);
 // router.delete("/:userId/memorooms/:memoroomId/:memoId", memoRoomController.getMemoRoom);

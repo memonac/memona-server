@@ -4,34 +4,29 @@ const MemoRoom = require("../models/MemoRoom");
 const Chat = require("../models/Chat");
 
 exports.getAllMemoRoom = async (userId) => {
-  const memoRooms = await User.findById(userId).populate({
+  const targetUser = await User.findById(userId).populate({
     path: "rooms",
     populate: { path: "memos" },
   });
 
-  if (!Object.keys(memoRooms).length) {
-    return;
-  }
-
+  //flatMap으로 리팩토링 해보기 ..
   const allTags = [];
+  const memoroomInfo = {};
 
-  const memoroomInfo = memoRooms.rooms.map((room) => {
+  targetUser.rooms.forEach((room) => {
     const memoTags = room.memos.map((memo) => memo.tags);
-    const refinedRoom = {};
 
-    allTags.concat(memoTags);
+    allTags.push(...memoTags);
 
-    refinedRoom[room._id] = {
+    memoroomInfo[room._id] = {
       name: room.name,
-      tags: Array.from(new Set(memoTags)),
+      tags: Array.from(new Set(memoTags.flat(Infinity))),
     };
-
-    return refinedRoom;
   });
 
   return {
-    tags: Array.from(new Set(allTags)),
-    memoRoom: memoroomInfo,
+    tags: Array.from(new Set(allTags.flat(Infinity))),
+    memoRooms: memoroomInfo,
   };
 };
 
@@ -40,20 +35,47 @@ exports.addNewMemoRoom = async (userId, roomName) => {
     owner: userId,
     participants: [userId],
     name: roomName,
-  }).exec();
+  });
 
   await User.findByIdAndUpdate(userId, {
     $push: { rooms: newMemoRoom._id },
   }).exec();
+
+  return newMemoRoom._id;
 };
 
 exports.updateMemoRoomTitle = async (memoRoomId, roomName) => {
   await MemoRoom.findByIdAndUpdate(memoRoomId, { name: roomName }).exec();
 };
 
-exports.removeMemoRoom = async (memoRoomId) => {
+exports.removeMemoRoom = async (userId, memoRoomId) => {
   await Memo.deleteMany({ room: memoRoomId }).exec();
   await Chat.deleteMany({ room: memoRoomId }).exec();
   await User.updateMany({}, { $pull: { rooms: memoRoomId } }).exec();
   await MemoRoom.findByIdAndRemove(memoRoomId).exec();
+
+  const targetUser = await User.findById(userId).populate({
+    path: "rooms",
+    populate: { path: "memos" },
+  });
+
+  //flatMap으로 리팩토링 해보기 ..
+  const allTags = [];
+  const memoroomInfo = {};
+
+  targetUser.rooms.forEach((room) => {
+    const memoTags = room.memos.map((memo) => memo.tags);
+
+    allTags.push(...memoTags);
+
+    memoroomInfo[room._id] = {
+      name: room.name,
+      tags: Array.from(new Set(memoTags.flat(Infinity))),
+    };
+  });
+
+  return {
+    tags: Array.from(new Set(allTags.flat(Infinity))),
+    memoRooms: memoroomInfo,
+  };
 };

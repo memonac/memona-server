@@ -2,7 +2,6 @@ const mongoose = require("mongoose");
 const { ObjectId } = mongoose.Types;
 const createError = require("http-errors");
 const { validationResult } = require("express-validator");
-
 const memoRoomDetailService = require("../services/memoRoomDetail");
 
 exports.getAllMemoRoomDetail = async (req, res, next) => {
@@ -47,7 +46,8 @@ exports.getAllMemoRoomDetail = async (req, res, next) => {
 
 exports.addNewMemo = async (req, res, next) => {
   const { userId, memoroomId } = req.params;
-  const { alarmDateInfo, imageFile, memoColor, memoTags, memoType } = req.body;
+  const { alarmDate, alarmTime, memoColor, memoTags, memoType } = req.body;
+  const awsImageUrl = req.file.location;
 
   const errors = validationResult(req);
 
@@ -75,12 +75,15 @@ exports.addNewMemo = async (req, res, next) => {
     return;
   }
 
+  const currentTime = new Date(`${alarmDate} ${alarmTime}`);
+
   try {
     const newMemo = await memoRoomDetailService.addNewMemo({
       userId,
       memoroomId,
-      alarmDateInfo,
-      imageFile,
+      alarmDateInfo:
+        currentTime.getTime() + currentTime.getTimezoneOffset() * 60 * 1000,
+      imageFile: awsImageUrl,
       memoColor,
       memoTags,
       memoType,
@@ -93,17 +96,6 @@ exports.addNewMemo = async (req, res, next) => {
       },
     });
   } catch (err) {
-    if (err.name === "MongoServerError") {
-      res.status(400).json({
-        result: "fail",
-        error: {
-          message: "Database Error",
-        },
-      });
-
-      return;
-    }
-
     next(createError(500, "Invalid Server Error"));
   }
 };

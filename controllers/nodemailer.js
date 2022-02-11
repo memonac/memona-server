@@ -8,6 +8,18 @@ const { validationResult } = require("express-validator");
 exports.postSendMail = async (req, res, next) => {
   const { email } = req.body;
   const errors = validationResult(req);
+  const user = await nodemailerService.verifyUser(email);
+
+  if (!user) {
+    res.status(400).json({
+      result: "fail",
+      error: {
+        message: "Not Found User",
+      },
+    });
+
+    return;
+  }
 
   if (!errors.isEmpty()) {
     const inputError = errors.errors[0];
@@ -90,25 +102,20 @@ exports.postVerifyToken = async (req, res, next) => {
     }
 
     const user = await nodemailerService.verifyUser(email);
-
-    if (!user) {
-      res.status(400).json({
-        result: "fail",
-        error: {
-          message: "Not found user",
-        },
-      });
-
-      return;
-    }
-
     const userId = user._id;
 
     await nodemailerService.updateMemoRoom(userId, memoroomId);
+
+    const userInfo = {};
+    userInfo[userId] = {
+      name: user.name,
+      email: user.email,
+    };
+
     res.json({
       result: "success",
       data: {
-        userId: userId,
+        userInfo,
       },
     });
   } catch (err) {

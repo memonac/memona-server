@@ -8,6 +8,7 @@ const storage = multerS3({
   key: function (req, file, cb) {
     try {
       const fileType = file.mimetype.split("/")[0] !== "image";
+
       if (fileType) {
         return cb(new Error("Only images are allowed"));
       }

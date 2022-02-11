@@ -2,6 +2,7 @@ const User = require("../models/User");
 const Memo = require("../models/Memo");
 const MemoRoom = require("../models/MemoRoom");
 const Chat = require("../models/Chat");
+const s3 = require("../configs/awsS3");
 
 exports.getAllMemoRoom = async (userId) => {
   const targetUser = await User.findById(userId).populate({
@@ -49,6 +50,24 @@ exports.updateMemoRoomTitle = async (memoRoomId, roomName) => {
 };
 
 exports.removeMemoRoom = async (userId, memoRoomId) => {
+  const Memos = await Memo.find({ room: memoRoomId }).lean().exec();
+
+  Memos.forEach((memo) => {
+    if (memo.formType !== "text") {
+      const splitedUrl = memo.content.split("/");
+
+      s3.deleteObject(
+        {
+          Bucket: process.env.AWS_BUCKET_NAME,
+          Key: splitedUrl[splitedUrl.length - 1],
+        },
+        (err) => {
+          if (err) throw err;
+        }
+      );
+    }
+  });
+
   await Memo.deleteMany({ room: memoRoomId }).exec();
   await Chat.deleteMany({ room: memoRoomId }).exec();
   await User.updateMany({}, { $pull: { rooms: memoRoomId } }).exec();
@@ -59,7 +78,7 @@ exports.removeMemoRoom = async (userId, memoRoomId) => {
     populate: { path: "memos" },
   });
 
-  //flatMap으로 리팩토링 해보기 ..
+  //flatMap으로 리팩토링 필요 (혹은 별도 유틸함수로 분리 필요)
   const allTags = [];
   const memoroomInfo = {};
 

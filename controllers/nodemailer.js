@@ -90,7 +90,6 @@ exports.postVerifyToken = async (req, res, next) => {
     }
 
     const user = await nodemailerService.verifyUser(email);
-    const userId = user._id;
 
     if (!user) {
       res.status(400).json({
@@ -102,6 +101,8 @@ exports.postVerifyToken = async (req, res, next) => {
 
       return;
     }
+
+    const userId = user._id;
 
     await nodemailerService.updateMemoRoom(userId, memoroomId);
     res.json({

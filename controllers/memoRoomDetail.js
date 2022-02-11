@@ -125,7 +125,6 @@ exports.deleteMemo = async (req, res, next) => {
       result: "success",
     });
   } catch (err) {
-    console.log(err.stack);
     next(createError(500, "Invalid Server Error"));
   }
 };

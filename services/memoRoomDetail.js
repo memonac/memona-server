@@ -12,7 +12,7 @@ exports.getDetailInfo = async (userId, memoroomId) => {
 
   const chat = await Chat.findOne({ room: memoroomId }).lean().exec();
 
-  const chatConversstions = chat ? chat.conversation : [];
+  const chatConverstions = chat ? chat.conversation : [];
 
   const userInfo = {
     id: userId,
@@ -48,7 +48,7 @@ exports.getDetailInfo = async (userId, memoroomId) => {
     memos: refinedMemos,
     slackToken: memoRooms.slackToken,
     name: memoRooms.name,
-    chats: chatConversstions,
+    chats: chatConverstions,
   };
 };
 

@@ -4,6 +4,7 @@ const createError = require("http-errors");
 const { validationResult } = require("express-validator");
 
 const memoRoomService = require("../services/memoRoom");
+const memoRoomDetail = require("../services/memoRoomDetail");
 
 exports.getAllMemoRooms = async (req, res, next) => {
   try {
@@ -73,10 +74,13 @@ exports.addNewMemoRoom = async (req, res, next) => {
   }
 
   try {
-    await memoRoomService.addNewMemoRoom(userId, name);
+    const newMemoRoomId = await memoRoomService.addNewMemoRoom(userId, name);
 
     res.json({
       result: "success",
+      data: {
+        newMemoRoomId,
+      },
     });
   } catch (err) {
     if (err.name === "MongoServerError") {
@@ -161,10 +165,14 @@ exports.removeMemoRoom = async (req, res, next) => {
   }
 
   try {
-    await memoRoomService.removeMemoRoom(memoroomId);
+    const newMemoRooms = await memoRoomService.removeMemoRoom(
+      userId,
+      memoroomId
+    );
 
     res.json({
       result: "success",
+      data: newMemoRooms,
     });
   } catch (err) {
     if (err.name === "MongoServerError") {

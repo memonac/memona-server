@@ -1,6 +1,8 @@
 const MemoRoom = require("../models/MemoRoom");
 const User = require("../models/User");
 const Chat = require("../models/Chat");
+const Memo = require("../models/Memo");
+const s3 = require("../configs/awsS3");
 
 exports.getDetailInfo = async (userId, memoroomId) => {
   const user = await User.findById(userId).lean().exec();
@@ -14,23 +16,91 @@ exports.getDetailInfo = async (userId, memoroomId) => {
 
   const userInfo = {
     id: userId,
-    email: user.email,
     name: user.name,
+    email: user.email,
   };
-  const participants = memoRooms.participants.map((participant) => {
-    return {
-      id: participant._id,
-      email: participant.email,
+  const participants = {};
+  memoRooms.participants.map((participant) => {
+    participants[participant._id] = {
       name: participant.name,
+      email: participant.email,
+    };
+  });
+
+  const refinedMemos = {};
+
+  memoRooms.memos.forEach((memo) => {
+    refinedMemos[memo._id] = {
+      author: memo.author,
+      color: memo.color,
+      content: memo.content,
+      formType: memo.formType,
+      location: memo.location,
+      room: memo.room,
+      size: memo.size,
+      tags: memo.tags,
     };
   });
 
   return {
     owner: userInfo,
     participants: participants,
-    memos: memoRooms.memos,
+    memos: refinedMemos,
     slackToken: memoRooms.slackToken,
     name: memoRooms.name,
     chats: chatConversstions,
   };
+};
+
+//음성파일의 경우 메모 작성 후 추후 수정으로 업로드 되기 때문에 해당 로직에서는 작성되지 않음
+exports.addNewMemo = async ({
+  userId,
+  memoroomId,
+  alarmDateInfo,
+  imageFile,
+  memoColor,
+  memoTags,
+  memoType,
+}) => {
+  const newMemo = await Memo.create({
+    room: memoroomId,
+    author: userId,
+    formType: memoType,
+    content: imageFile || "",
+    location: [500, 0],
+    size: [250, 250],
+    color: memoColor,
+    alarmDate: alarmDateInfo,
+    tags: memoTags.split(" "),
+  });
+
+  await MemoRoom.findByIdAndUpdate(memoroomId, {
+    $push: { memos: newMemo._id },
+  });
+
+  return newMemo;
+};
+
+exports.deleteMemo = async ({ memoroomId, memoId }) => {
+  const targetMemo = await Memo.findById(memoId).lean().exec();
+
+  // aws s3 저장파일 분기처리(단일파일 삭제하는 경우)
+  if (targetMemo.formType !== "text") {
+    const splitedUrl = targetMemo.content.split("/");
+
+    s3.deleteObject(
+      {
+        Bucket: process.env.AWS_BUCKET_NAME,
+        Key: splitedUrl[splitedUrl.length - 1],
+      },
+      (err) => {
+        if (err) throw err;
+      }
+    );
+  }
+
+  await Memo.findByIdAndDelete(memoId);
+  await MemoRoom.findByIdAndUpdate(memoroomId, {
+    $pull: { memos: memoId },
+  });
 };

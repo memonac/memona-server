@@ -14,10 +14,7 @@ const MemoSchema = new Schema({
     type: String,
     required: [true, "formType must be require"],
   },
-  content: {
-    type: String,
-    required: [true, "formType must be require"],
-  },
+  content: String,
   location: [
     {
       type: Number,

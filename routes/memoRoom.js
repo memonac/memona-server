@@ -8,6 +8,7 @@ const nodemailerController = require("../controllers/nodemailer");
 const checkInputValue = require("./middlewares/checkInputValue");
 const checkNewMemoInputValue = require("./middlewares/checkNewMemoInputValue");
 const checkEmail = require("./middlewares/checkEmail");
+const uploadToAwsS3 = require("../routes/middlewares/fileUploadToAWS");
 
 router.get("/:userId/memorooms", memoRoomController.getAllMemoRooms);
 router.post(
@@ -37,6 +38,7 @@ router.post("/:memoroomId/invite", nodemailerController.postVerifyToken);
 
 router.post(
   "/:userId/memorooms/:memoroomId/memo",
+  uploadToAwsS3.single("imageFile"),
   checkNewMemoInputValue,
   memoRoomDetailController.addNewMemo
 );

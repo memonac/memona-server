@@ -1,6 +1,7 @@
 const MemoRoom = require("../models/MemoRoom");
 const User = require("../models/User");
 const Memo = require("../models/Memo");
+const s3 = require("../configs/awsS3");
 
 exports.getDetailInfo = async (userId, memoroomId) => {
   const user = await User.findById(userId).lean().exec();
@@ -45,6 +46,7 @@ exports.getDetailInfo = async (userId, memoroomId) => {
   };
 };
 
+//음성파일의 경우 메모 작성 후 추후 수정으로 업로드 되기 때문에 해당 로직에서는 작성되지 않음
 exports.addNewMemo = async ({
   userId,
   memoroomId,
@@ -74,6 +76,23 @@ exports.addNewMemo = async ({
 };
 
 exports.deleteMemo = async ({ memoroomId, memoId }) => {
+  const targetMemo = await Memo.findById(memoId).lean().exec();
+
+  // aws s3 저장파일 분기처리(단일파일 삭제하는 경우)
+  if (targetMemo.formType !== "text") {
+    const splitedUrl = targetMemo.content.split("/");
+
+    s3.deleteObject(
+      {
+        Bucket: process.env.AWS_BUCKET_NAME,
+        Key: splitedUrl[splitedUrl.length - 1],
+      },
+      (err) => {
+        if (err) throw err;
+      }
+    );
+  }
+
   await Memo.findByIdAndDelete(memoId);
   await MemoRoom.findByIdAndUpdate(memoroomId, {
     $pull: { memos: memoId },

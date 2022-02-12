@@ -1,5 +1,6 @@
 const MemoRoom = require("../models/MemoRoom");
 const User = require("../models/User");
+const Chat = require("../models/Chat");
 const Memo = require("../models/Memo");
 const s3 = require("../configs/awsS3");
 
@@ -8,6 +9,10 @@ exports.getDetailInfo = async (userId, memoroomId) => {
   const memoRooms = await MemoRoom.findById(memoroomId)
     .populate("participants")
     .populate("memos");
+
+  const chat = await Chat.findOne({ room: memoroomId }).lean().exec();
+
+  const chatConverstions = chat ? chat.conversation : [];
 
   const userInfo = {
     id: userId,
@@ -43,6 +48,7 @@ exports.getDetailInfo = async (userId, memoroomId) => {
     memos: refinedMemos,
     slackToken: memoRooms.slackToken,
     name: memoRooms.name,
+    chats: chatConverstions,
   };
 };
 

@@ -165,7 +165,10 @@ exports.removeMemoRoom = async (req, res, next) => {
   }
 
   try {
-    const newMemoRooms = await memoRoomService.removeMemoRoom(userId, memoroomId);
+    const newMemoRooms = await memoRoomService.removeMemoRoom(
+      userId,
+      memoroomId
+    );
 
     res.json({
       result: "success",

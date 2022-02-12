@@ -13,4 +13,8 @@ develop 브랜치에서 pull 받은 후 작업하면서 추가로 리팩토링 �
 
  - aws s3 error handling : 관련 조사 추가 필요
  - services/memoRoom.js : forEach & deleteObject가 아닌 "deleteObjects"으로 다시 구현할 것 [관련 공식 문서](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#deleteObjects-property)
- 
+
+## feature/1018
+ - chat 소켓 연결
+ - chat 이라는 네임스페이스를 이용하여 해당 채팅만 해당하는 이벤트 관심사 분리를 하였음
+ - 현재 소켓 on 이벤트 로직에 비즈니스 로직이 추가되어 있음

@@ -5,21 +5,21 @@ const s3 = require("../../configs/awsS3");
 const storage = multerS3({
   s3: s3,
   bucket: process.env.AWS_BUCKET_NAME,
-  key: function (req, file, cb) {
+  key: function (req, file, callback) {
     try {
       const fileType = file.mimetype.split("/")[0] !== "image";
 
       if (fileType) {
-        return cb(new Error("Only images are allowed"));
+        return callback(new Error("Only images are allowed"));
       }
 
       const fileNameArray = file.originalname.split(".");
-      cb(
+      callback(
         null,
         "img" + Date.now() + "." + fileNameArray[fileNameArray.length - 1]
       );
     } catch (err) {
-      return cb(new Error("multer image upload error"));
+      return callback(new Error("multer image upload error"));
     }
   },
   acl: "public-read",

@@ -1,11 +1,16 @@
 const MemoRoom = require("../models/MemoRoom");
 const User = require("../models/User");
+const Chat = require("../models/Chat");
 
 exports.getDetailInfo = async (userId, memoroomId) => {
   const user = await User.findById(userId).lean().exec();
   const memoRooms = await MemoRoom.findById(memoroomId)
     .populate("participants")
     .populate("memos");
+
+  const chat = await Chat.findOne({ room: memoroomId }).lean().exec();
+
+  const chatConversstions = chat ? chat.conversation : [];
 
   const userInfo = {
     id: userId,
@@ -26,5 +31,6 @@ exports.getDetailInfo = async (userId, memoroomId) => {
     memos: memoRooms.memos,
     slackToken: memoRooms.slackToken,
     name: memoRooms.name,
+    chats: chatConversstions,
   };
 };

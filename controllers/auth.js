@@ -16,12 +16,13 @@ exports.getLogin = async (req, res, next) => {
   }
 
   try {
-    const userId = await userService.createUser(userInfo);
+    const user = await userService.createUser(userInfo);
 
     res.json({
       result: "success",
       data: {
-        userId,
+        userId: user._id,
+        name: user.name,
       },
     });
   } catch (err) {

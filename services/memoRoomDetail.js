@@ -98,3 +98,7 @@ exports.deleteMemo = async ({ memoroomId, memoId }) => {
     $pull: { memos: memoId },
   });
 };
+
+exports.updateMemoLocation = async ({ memoId, left, top }) => {
+  await Memo.findByIdAndUpdate(memoId, { location: [left, top] }).exec();
+};

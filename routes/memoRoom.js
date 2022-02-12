@@ -48,6 +48,11 @@ router.delete(
   memoRoomDetailController.deleteMemo
 );
 
+router.put(
+  "/:userId/memorooms/:memoroomId/memos/:memoId/location",
+  memoRoomDetailController.updateMemoLocation
+);
+
 // router.get("/:userId/memorooms/:memoroomId/memo/:memoId", memoRoomController.getMemoRoom);
 // router.put("/:userId/memorooms/:memoroomId/:memoId", memoRoomController.getMemoRoom);
 

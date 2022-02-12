@@ -80,7 +80,7 @@ exports.addNewMemoRoom = async (req, res, next) => {
       result: "success",
       data: {
         newMemoRoomId,
-      }
+      },
     });
   } catch (err) {
     if (err.name === "MongoServerError") {

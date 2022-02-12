@@ -11,14 +11,14 @@ exports.getDetailInfo = async (userId, memoroomId) => {
 
   const userInfo = {
     id: userId,
-    email: user.email,
     name: user.name,
+    email: user.email,
   };
-  const participants = memoRooms.participants.map((participant) => {
-    return {
-      id: participant._id,
-      email: participant.email,
+  const participants = {};
+  memoRooms.participants.map((participant) => {
+    participants[participant._id] = {
       name: participant.name,
+      email: participant.email,
     };
   });
 

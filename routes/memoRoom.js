@@ -1,3 +1,4 @@
+// routes
 const express = require("express");
 const router = express.Router();
 
@@ -33,10 +34,7 @@ router.post(
   checkEmail,
   nodemailerController.postSendMail
 );
-router.post(
-  "/:userId/memorooms/:memoroomId/verify/:token",
-  nodemailerController.postVerifyToken
-);
+router.post("/:memoroomId/invite", nodemailerController.postVerifyToken);
 
 router.post(
   "/:userId/memorooms/:memoroomId/memo",

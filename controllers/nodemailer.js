@@ -7,8 +7,19 @@ const { validationResult } = require("express-validator");
 
 exports.postSendMail = async (req, res, next) => {
   const { email } = req.body;
-
   const errors = validationResult(req);
+  const user = await nodemailerService.verifyUser(email);
+
+  if (!user) {
+    res.status(400).json({
+      result: "fail",
+      error: {
+        message: "Not Found User",
+      },
+    });
+
+    return;
+  }
 
   if (!errors.isEmpty()) {
     const inputError = errors.errors[0];
@@ -28,7 +39,7 @@ exports.postSendMail = async (req, res, next) => {
     const token = jwt.sign({ email }, process.env.SECRET_KEY, {
       expiresIn: "1h",
     });
-    const url = `${process.env.PATH}/${memoroomId}/${process.env.INVITE_URL}?token=${token}`;
+    const url = `${process.env.CLIENT}/users/${memoroomId}/${process.env.INVITE_URL}?token=${token}`;
 
     const message = {
       from: process.env.GOOGLE_MAIL,
@@ -72,8 +83,8 @@ exports.postSendMail = async (req, res, next) => {
 };
 
 exports.postVerifyToken = async (req, res, next) => {
-  const { token } = req.body;
   const { memoroomId } = req.params;
+  const { token } = req.body;
 
   try {
     const decoded = jwt.verify(token, process.env.SECRET_KEY);
@@ -91,17 +102,6 @@ exports.postVerifyToken = async (req, res, next) => {
     }
 
     const user = await nodemailerService.verifyUser(email);
-
-    if (!user) {
-      res.status(400).json({
-        result: "fail",
-        error: {
-          message: "Not found user",
-        },
-      });
-
-      return;
-    }
     const userId = user._id;
 
     await nodemailerService.updateMemoRoom(userId, memoroomId);
@@ -114,7 +114,9 @@ exports.postVerifyToken = async (req, res, next) => {
 
     res.json({
       result: "success",
-      data: userInfo,
+      data: {
+        userInfo,
+      },
     });
   } catch (err) {
     if (err.name === "TokenExpiredError") {

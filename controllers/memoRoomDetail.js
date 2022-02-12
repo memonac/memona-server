@@ -47,7 +47,7 @@ exports.getAllMemoRoomDetail = async (req, res, next) => {
 exports.addNewMemo = async (req, res, next) => {
   const { userId, memoroomId } = req.params;
   const { alarmDate, alarmTime, memoColor, memoTags, memoType } = req.body;
-  const awsImageUrl = req.file.location;
+  const awsImageUrl = req.file ? req.file.location : "";
 
   const errors = validationResult(req);
 

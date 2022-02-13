@@ -55,10 +55,9 @@ module.exports = function createSocket(server, app) {
       socket.leave(roomId);
     });
 
-    socket.on("send updated location", async (memoId, left, top) => {
-      socket
-        .to(socket.roomId)
-        .emit("receive updated location", memoId, left, top);
+    // send memo/location
+    socket.on("memo/location", async (memoId, left, top) => {
+      socket.to(socket.roomId).emit("memo/location", memoId, left, top);
       memoRoomDetailService.updateMemoLocation({
         memoId,
         left,

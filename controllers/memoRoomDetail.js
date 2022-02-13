@@ -132,33 +132,3 @@ exports.deleteMemo = async (req, res, next) => {
     next(createError(500, "Invalid Server Error"));
   }
 };
-
-exports.updateMemoLocation = async (req, res, next) => {
-  const { userId, memoroomId, memoId } = req.params;
-  const { left, top } = req.body;
-
-  if (
-    !ObjectId.isValid(userId) ||
-    !ObjectId.isValid(memoroomId) ||
-    !ObjectId.isValid(memoId)
-  ) {
-    res.status(400).json({
-      result: "fail",
-      error: {
-        message: "Not Valid ObjectId",
-      },
-    });
-
-    return;
-  }
-
-  try {
-    await memoRoomDetailService.updateMemoLocation({ memoId, left, top });
-
-    res.json({
-      result: "success",
-    });
-  } catch (err) {
-    next(createError(500, "Invalid Server Error"));
-  }
-};

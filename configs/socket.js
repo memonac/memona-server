@@ -1,5 +1,6 @@
 const { Server } = require("socket.io");
 const chatService = require("../services/chat");
+const memoRoomDetailService = require("../services/memoRoomDetail");
 
 module.exports = function createSocket(server, app) {
   const io = new Server(server, {
@@ -35,6 +36,33 @@ module.exports = function createSocket(server, app) {
         userName: socket.userName,
         message,
         date,
+      });
+    });
+  });
+
+  memoSpace.on("connection", (socket) => {
+    // 메모 위치 수정하는데 이렇게 필요한가 >?
+    socket.on("join room", (userId, userName, roomId) => {
+      socket.userId = userId;
+      socket.userName = userName;
+      socket.roomId = roomId;
+
+      socket.join(roomId);
+      socket.to(roomId).emit("join room", userName);
+    });
+
+    socket.on("leave room", (roomId) => {
+      socket.leave(roomId);
+    });
+
+    socket.on("send updated location", async (memoId, left, top) => {
+      socket
+        .to(socket.roomId)
+        .emit("receive updated location", memoId, left, top);
+      memoRoomDetailService.updateMemoLocation({
+        memoId,
+        left,
+        top,
       });
     });
   });

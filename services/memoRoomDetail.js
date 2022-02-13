@@ -12,7 +12,18 @@ exports.getDetailInfo = async (userId, memoroomId) => {
 
   const chat = await Chat.findOne({ room: memoroomId }).lean().exec();
 
-  const chatConverstions = chat ? chat.conversation : [];
+  const chatConverstions = chat ? chat.conversation.slice(-15) : [];
+  let chatLastIndex;
+
+  if (chat) {
+    if (chat.conversation.length === chatConverstions.length) {
+      chatLastIndex = 0;
+    } else {
+      chatLastIndex = chat.conversation.length - chatConverstions.length;
+    }
+  } else {
+    chatLastIndex = null;
+  }
 
   const userInfo = {
     id: userId,
@@ -49,6 +60,7 @@ exports.getDetailInfo = async (userId, memoroomId) => {
     slackToken: memoRooms.slackToken,
     name: memoRooms.name,
     chats: chatConverstions,
+    chatLastIndex: chatLastIndex,
   };
 };
 

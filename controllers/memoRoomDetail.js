@@ -75,14 +75,18 @@ exports.addNewMemo = async (req, res, next) => {
     return;
   }
 
-  const currentTime = new Date(`${alarmDate} ${alarmTime}`);
+  function makeUTC(date, time) {
+    if (!date && !time) return "";
+    const currentTime = new Date(`${date} ${time}`);
+
+    return currentTime.getTime() + currentTime.getTimezoneOffset() * 60 * 1000;
+  }
 
   try {
     const newMemo = await memoRoomDetailService.addNewMemo({
       userId,
       memoroomId,
-      alarmDateInfo:
-        currentTime.getTime() + currentTime.getTimezoneOffset() * 60 * 1000,
+      alarmDateInfo: makeUTC(alarmDate, alarmTime),
       imageFile: awsImageUrl,
       memoColor,
       memoTags,

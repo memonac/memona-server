@@ -1,7 +1,8 @@
 const Chat = require("../models/Chat");
+const MemoRoom = require("../models/MemoRoom");
 
 exports.addChat = async ({ roomId, userId, userName, message, date }) => {
-  const chat = await Chat.findOne({ roomId }).lean().exec();
+  const chat = await Chat.findOne({ room: roomId }).lean().exec();
 
   if (!chat) {
     await Chat.create({
@@ -16,7 +17,7 @@ exports.addChat = async ({ roomId, userId, userName, message, date }) => {
           sendDate: date,
         },
       ],
-    }).exec();
+    });
 
     return;
   }
@@ -36,4 +37,18 @@ exports.addChat = async ({ roomId, userId, userName, message, date }) => {
       },
     }
   ).exec();
+};
+
+exports.getNextChatList = async (roomId, lastIndex) => {
+  const chat = await Chat.findOne({ room: roomId }).lean().exec();
+
+  const startIndex = lastIndex - 15 < 0 ? 0 : lastIndex - 15;
+  const endIndex = lastIndex;
+
+  const chatConversation = chat.conversation.slice(startIndex, endIndex);
+
+  return {
+    chats: chatConversation,
+    lastIndex: startIndex,
+  };
 };

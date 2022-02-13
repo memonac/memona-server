@@ -108,3 +108,8 @@ exports.deleteMemo = async ({ memoroomId, memoId }) => {
 exports.updateMemoLocation = async ({ memoId, left, top }) => {
   await Memo.findByIdAndUpdate(memoId, { location: [left, top] }).exec();
 };
+
+exports.updateMemoSize = async ({ memoId, width, height }) => {
+  console.log("service,,", memoId, width, height);
+  await Memo.findByIdAndUpdate(memoId, { size: [width, height] }).exec();
+};

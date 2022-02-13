@@ -71,5 +71,14 @@ module.exports = function createSocket(server, app) {
         memoId,
       });
     });
+
+    socket.on("memo/size", async (memoId, width, height) => {
+      socket.to(socket.roomId).emit("memo/size", memoId, width, height);
+      memoRoomDetailService.updateMemoSize({
+        memoId,
+        width,
+        height,
+      });
+    });
   });
 };

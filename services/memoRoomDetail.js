@@ -110,6 +110,9 @@ exports.updateMemoLocation = async ({ memoId, left, top }) => {
 };
 
 exports.updateMemoSize = async ({ memoId, width, height }) => {
-  console.log("service,,", memoId, width, height);
   await Memo.findByIdAndUpdate(memoId, { size: [width, height] }).exec();
+};
+
+exports.updateMemoText = async ({ memoId, text }) => {
+  await Memo.findByIdAndUpdate(memoId, { content: text }).exec();
 };

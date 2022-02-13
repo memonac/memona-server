@@ -80,5 +80,13 @@ module.exports = function createSocket(server, app) {
         height,
       });
     });
+
+    socket.on("memo/text", async (memoId, text) => {
+      socket.to(socket.roomId).emit("memo/text", memoId, text);
+      memoRoomDetailService.updateMemoText({
+        memoId,
+        text,
+      });
+    });
   });
 };

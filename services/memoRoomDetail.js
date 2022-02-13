@@ -36,6 +36,7 @@ exports.getDetailInfo = async (userId, memoroomId) => {
       content: memo.content,
       formType: memo.formType,
       location: memo.location,
+      alarmDate: memo.alarmDate,
       room: memo.room,
       size: memo.size,
       tags: memo.tags,

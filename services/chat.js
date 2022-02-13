@@ -1,7 +1,7 @@
 const Chat = require("../models/Chat");
 
 exports.addChat = async ({ roomId, userId, userName, message, date }) => {
-  const chat = await Chat.findOne({ roomId }).lean().exec();
+  const chat = await Chat.findOne({ room: roomId }).lean().exec();
 
   if (!chat) {
     await Chat.create({
@@ -16,7 +16,7 @@ exports.addChat = async ({ roomId, userId, userName, message, date }) => {
           sendDate: date,
         },
       ],
-    }).exec();
+    });
 
     return;
   }

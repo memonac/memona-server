@@ -36,6 +36,7 @@ router.post(
 );
 router.post("/:memoroomId/invite", nodemailerController.postVerifyToken);
 
+//
 router.post(
   "/:userId/memorooms/:memoroomId/memo",
   uploadToAwsS3.single("imageFile"),

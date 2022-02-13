@@ -55,13 +55,20 @@ module.exports = function createSocket(server, app) {
       socket.leave(roomId);
     });
 
-    // send memo/location
     socket.on("memo/location", async (memoId, left, top) => {
       socket.to(socket.roomId).emit("memo/location", memoId, left, top);
       memoRoomDetailService.updateMemoLocation({
         memoId,
         left,
         top,
+      });
+    });
+
+    socket.on("memo/delete", async (memoId) => {
+      socket.to(socket.roomId).emit("memo/delete", memoId);
+      memoRoomDetailService.deleteMemo({
+        memoroomId: socket.roomId,
+        memoId,
       });
     });
   });

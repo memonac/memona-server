@@ -96,5 +96,9 @@ module.exports = function createSocket(server, app) {
         text,
       });
     });
+
+    socket.on("memo/add", async (newMemo) => {
+      socket.to(socket.roomId).emit("memo/add", newMemo);
+    });
   });
 };

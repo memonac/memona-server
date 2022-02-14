@@ -61,7 +61,7 @@ exports.getDetailInfo = async (userId, memoroomId) => {
     slackToken: memoRooms.slackToken,
     name: memoRooms.name,
     chats: chatConverstions,
-    chatLastIndex: chatLastIndex,
+    chatLastIndex,
   };
 };
 

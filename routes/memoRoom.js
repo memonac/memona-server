@@ -4,15 +4,22 @@ const router = express.Router();
 const memoRoomController = require("../controllers/memoRoom");
 const memoRoomDetailController = require("../controllers/memoRoomDetail");
 const nodemailerController = require("../controllers/nodemailer");
-const checkInputValue = require("./middlewares/checkInputValue");
-const checkNewMemoInputValue = require("./middlewares/checkNewMemoInputValue");
-const checkEmail = require("./middlewares/checkEmail");
+
+const validator = require("./middlewares/validator");
+const {
+  checkMemoNameValue,
+  checkEmail,
+  checkNewMemoInputValue,
+  checkMemoStyleValue,
+  checkSizeValue,
+  checkLocationValue,
+} = require("./middlewares/inputValidaionList");
 const uploadToAwsS3 = require("../routes/middlewares/fileUploadToAWS");
 
 router.get("/:userId/memorooms", memoRoomController.getAllMemoRooms);
 router.post(
   "/:userId/memorooms",
-  checkInputValue,
+  validator(checkMemoNameValue),
   memoRoomController.addNewMemoRoom
 );
 router.get(
@@ -21,7 +28,7 @@ router.get(
 );
 router.put(
   "/:userId/memorooms/:memoroomId",
-  checkInputValue,
+  validator(checkMemoNameValue),
   memoRoomController.updateMemoRoomTitle
 );
 router.delete(
@@ -30,14 +37,14 @@ router.delete(
 );
 router.post(
   "/:userId/memorooms/:memoroomId/invite",
-  checkEmail,
+  validator(checkEmail),
   nodemailerController.postSendMail
 );
 router.post("/:memoroomId/invite", nodemailerController.postVerifyToken);
 router.post(
   "/:userId/memorooms/:memoroomId/memo",
   uploadToAwsS3.single("imageFile"),
-  checkNewMemoInputValue,
+  validator(checkNewMemoInputValue),
   memoRoomDetailController.addNewMemo
 );
 router.delete(
@@ -50,14 +57,17 @@ router.put(
 );
 router.put(
   "/:userId/memorooms/:memoroomId/memos/:memoId/style",
+  validator(checkMemoStyleValue),
   memoRoomDetailController.updateMemoStyle
 );
 router.put(
   "/:userId/memorooms/:memoroomId/memos/:memoId/size",
+  validator(checkSizeValue),
   memoRoomDetailController.updateMemoSize
 );
 router.put(
   "/:userId/memorooms/:memoroomId/memos/:memoId/location",
+  validator(checkLocationValue),
   memoRoomDetailController.updateMemoLocation
 );
 

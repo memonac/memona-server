@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
 const { ObjectId } = mongoose.Types;
 const createError = require("http-errors");
-const { validationResult } = require("express-validator");
 const memoRoomDetailService = require("../services/memoRoomDetail");
 
 exports.getAllMemoRoomDetail = async (req, res, next) => {
@@ -38,26 +37,11 @@ exports.addNewMemo = async (req, res, next) => {
   const { alarmDate, alarmTime, memoColor, memoTags, memoType } = req.body;
   const awsImageUrl = req.file ? req.file.location : "";
 
-  const errors = validationResult(req);
-
   if (!ObjectId.isValid(userId) || !ObjectId.isValid(memoroomId)) {
     res.status(400).json({
       result: "fail",
       error: {
         message: "Not Valid ObjectId",
-      },
-    });
-
-    return;
-  }
-
-  if (!errors.isEmpty()) {
-    const inputError = errors.errors[0];
-
-    res.status(400).json({
-      result: "fail",
-      error: {
-        message: inputError.msg,
       },
     });
 

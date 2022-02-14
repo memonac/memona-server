@@ -112,13 +112,11 @@ exports.updateMemoStyle = async ({
   alarmDate,
   memoTags,
 }) => {
-  const targetMemo = await Memo.findByIdAndUpdate(memoId, {
+  await Memo.findByIdAndUpdate(memoId, {
     color: memoColor,
     alarmDate,
     tags: memoTags.split(" "),
   }).exec();
-
-  console.log(targetMemo);
 };
 
 exports.updateMemoLocation = async ({ memoId, left, top }) => {

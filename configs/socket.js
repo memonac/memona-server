@@ -66,10 +66,6 @@ module.exports = function createSocket(server, app) {
 
     socket.on("memo/delete", async (memoId) => {
       socket.to(socket.roomId).emit("memo/delete", memoId);
-      memoRoomDetailService.deleteMemo({
-        memoroomId: socket.roomId,
-        memoId,
-      });
     });
 
     socket.on("memo/size", async (memoId, width, height) => {

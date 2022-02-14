@@ -64,18 +64,11 @@ exports.addNewMemo = async (req, res, next) => {
     return;
   }
 
-  function makeUTC(date, time) {
-    if (!date && !time) return "";
-    const currentTime = new Date(`${date} ${time}`);
-
-    return currentTime.getTime() + currentTime.getTimezoneOffset() * 60 * 1000;
-  }
-
   try {
     const newMemo = await memoRoomDetailService.addNewMemo({
       userId,
       memoroomId,
-      alarmDateInfo: makeUTC(alarmDate, alarmTime),
+      alarmDate,
       imageFile: awsImageUrl,
       memoColor,
       memoTags,
@@ -118,6 +111,48 @@ exports.deleteMemo = async (req, res, next) => {
       result: "success",
     });
   } catch (err) {
+    next(createError(500, "Invalid Server Error"));
+  }
+};
+
+exports.updateMemoStyle = async (req, res, next) => {
+  const { userId, memoroomId, memoId } = req.params;
+  const { memoColor, alarmDate, memoTags } = req.body;
+
+  if (
+    !ObjectId.isValid(userId) ||
+    !ObjectId.isValid(memoroomId) ||
+    !ObjectId.isValid(memoId)
+  ) {
+    res.status(400).json({
+      result: "fail",
+      error: {
+        message: "Not Valid ObjectId",
+      },
+    });
+
+    return;
+  }
+
+  try {
+    await memoRoomDetailService.updateMemoStyle({
+      memoId,
+      memoColor,
+      alarmDate,
+      memoTags,
+    });
+
+    res.json({
+      result: "success",
+      data: {
+        memoId,
+        memoColor,
+        alarmDate,
+        memoTags: memoTags.split(" "),
+      },
+    });
+  } catch (err) {
+    console.log(err.stack);
     next(createError(500, "Invalid Server Error"));
   }
 };

@@ -88,5 +88,11 @@ module.exports = function createSocket(server, app) {
         text,
       });
     });
+
+    socket.on("memo/style", async (memoId, memoColor, alarmDate, tags) => {
+      socket
+        .to(socket.roomId)
+        .emit("memo/style", memoId, memoColor, alarmDate, tags);
+    });
   });
 };

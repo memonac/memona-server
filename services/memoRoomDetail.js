@@ -57,7 +57,7 @@ exports.getDetailInfo = async (userId, memoroomId) => {
 exports.addNewMemo = async ({
   userId,
   memoroomId,
-  alarmDateInfo,
+  alarmDate,
   imageFile,
   memoColor,
   memoTags,
@@ -71,7 +71,7 @@ exports.addNewMemo = async ({
     location: [500, 0],
     size: [250, 250],
     color: memoColor,
-    alarmDate: alarmDateInfo,
+    alarmDate,
     tags: memoTags.split(" "),
   });
 
@@ -104,6 +104,21 @@ exports.deleteMemo = async ({ memoroomId, memoId }) => {
   await MemoRoom.findByIdAndUpdate(memoroomId, {
     $pull: { memos: memoId },
   });
+};
+
+exports.updateMemoStyle = async ({
+  memoId,
+  memoColor,
+  alarmDate,
+  memoTags,
+}) => {
+  const targetMemo = await Memo.findByIdAndUpdate(memoId, {
+    color: memoColor,
+    alarmDate,
+    tags: memoTags.split(" "),
+  }).exec();
+
+  console.log(targetMemo);
 };
 
 exports.updateMemoLocation = async ({ memoId, left, top }) => {

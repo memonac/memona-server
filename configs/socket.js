@@ -30,7 +30,7 @@ module.exports = function createSocket(server, app) {
       socket
         .to(socket.roomId)
         .emit("receive message", socket.userId, socket.userName, message, date);
-      chatService.addChat({
+      await chatService.addChat({
         roomId: socket.roomId,
         userId: socket.userId,
         userName: socket.userName,
@@ -57,7 +57,7 @@ module.exports = function createSocket(server, app) {
 
     socket.on("memo/location", async (memoId, left, top) => {
       socket.to(socket.roomId).emit("memo/location", memoId, left, top);
-      memoRoomDetailService.updateMemoLocation({
+      await memoRoomDetailService.updateMemoLocation({
         memoId,
         left,
         top,
@@ -66,7 +66,7 @@ module.exports = function createSocket(server, app) {
 
     socket.on("memo/delete", async (memoId) => {
       socket.to(socket.roomId).emit("memo/delete", memoId);
-      memoRoomDetailService.deleteMemo({
+      await memoRoomDetailService.deleteMemo({
         memoroomId: socket.roomId,
         memoId,
       });
@@ -74,7 +74,7 @@ module.exports = function createSocket(server, app) {
 
     socket.on("memo/size", async (memoId, width, height) => {
       socket.to(socket.roomId).emit("memo/size", memoId, width, height);
-      memoRoomDetailService.updateMemoSize({
+      await memoRoomDetailService.updateMemoSize({
         memoId,
         width,
         height,
@@ -83,7 +83,7 @@ module.exports = function createSocket(server, app) {
 
     socket.on("memo/text", async (memoId, text) => {
       socket.to(socket.roomId).emit("memo/text", memoId, text);
-      memoRoomDetailService.updateMemoText({
+      await memoRoomDetailService.updateMemoText({
         memoId,
         text,
       });

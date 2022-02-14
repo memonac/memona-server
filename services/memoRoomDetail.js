@@ -36,6 +36,7 @@ exports.getDetailInfo = async (userId, memoroomId) => {
       content: memo.content,
       formType: memo.formType,
       location: memo.location,
+      alarmDate: memo.alarmDate,
       room: memo.room,
       size: memo.size,
       tags: memo.tags,
@@ -107,4 +108,12 @@ exports.deleteMemo = async ({ memoroomId, memoId }) => {
 
 exports.updateMemoLocation = async ({ memoId, left, top }) => {
   await Memo.findByIdAndUpdate(memoId, { location: [left, top] }).exec();
+};
+
+exports.updateMemoSize = async ({ memoId, width, height }) => {
+  await Memo.findByIdAndUpdate(memoId, { size: [width, height] }).exec();
+};
+
+exports.updateMemoText = async ({ memoId, text }) => {
+  await Memo.findByIdAndUpdate(memoId, { content: text }).exec();
 };

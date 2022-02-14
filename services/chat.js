@@ -5,7 +5,7 @@ exports.addChat = async ({ roomId, userId, userName, message, date }) => {
   const chat = await Chat.findOne({ room: roomId }).lean().exec();
 
   if (!chat) {
-    await Chat.create({
+    const chat = await Chat.create({
       room: roomId,
       conversation: [
         {
@@ -19,10 +19,10 @@ exports.addChat = async ({ roomId, userId, userName, message, date }) => {
       ],
     });
 
-    return;
+    return chat.conversation[0];
   }
 
-  await Chat.updateOne(
+  const chats = await Chat.findOneAndUpdate(
     { room: roomId },
     {
       $push: {
@@ -35,8 +35,15 @@ exports.addChat = async ({ roomId, userId, userName, message, date }) => {
           sendDate: date,
         },
       },
+    },
+    {
+      new: true,
     }
-  ).exec();
+  )
+    .lean()
+    .exec();
+
+  return chats.conversation[chats.conversation.length - 1];
 };
 
 exports.getNextChatList = async (roomId, lastIndex) => {

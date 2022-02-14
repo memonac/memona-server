@@ -8,6 +8,7 @@ const checkInputValue = require("./middlewares/checkInputValue");
 const checkNewMemoInputValue = require("./middlewares/checkNewMemoInputValue");
 const checkEmail = require("./middlewares/checkEmail");
 const uploadToAwsS3 = require("../routes/middlewares/fileUploadToAWS");
+const chatController = require("../controllers/chat");
 const audioUploadToAwsS3 = require("../routes/middlewares/audioUplodadToAWS");
 
 router.get("/:userId/memorooms", memoRoomController.getAllMemoRooms);
@@ -35,14 +36,12 @@ router.post(
   nodemailerController.postSendMail
 );
 router.post("/:memoroomId/invite", nodemailerController.postVerifyToken);
-
 router.post(
   "/:userId/memorooms/:memoroomId/memo",
   uploadToAwsS3.single("imageFile"),
   checkNewMemoInputValue,
   memoRoomDetailController.addNewMemo
 );
-
 router.delete(
   "/:userId/memorooms/:memoroomId/memos/:memoId",
   memoRoomDetailController.deleteMemo
@@ -56,5 +55,10 @@ router.post(
 
 // router.get("/:userId/memorooms/:memoroomId/memo/:memoId", memoRoomController.getMemoRoom);
 // router.put("/:userId/memorooms/:memoroomId/:memoId", memoRoomController.getMemoRoom);
+
+router.get(
+  "/:userId/memorooms/:memoroomId/chats/:chatLastIndex",
+  chatController.getChats
+);
 
 module.exports = router;

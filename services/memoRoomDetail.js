@@ -1,5 +1,6 @@
 const MemoRoom = require("../models/MemoRoom");
 const User = require("../models/User");
+const Chat = require("../models/Chat");
 const Memo = require("../models/Memo");
 const s3 = require("../configs/awsS3");
 
@@ -8,6 +9,21 @@ exports.getDetailInfo = async (userId, memoroomId) => {
   const memoRooms = await MemoRoom.findById(memoroomId)
     .populate("participants")
     .populate("memos");
+
+  const chat = await Chat.findOne({ room: memoroomId }).lean().exec();
+
+  const chatConverstions = chat ? chat.conversation.slice(-15) : [];
+  let chatLastIndex;
+
+  if (chat) {
+    if (chat.conversation.length === chatConverstions.length) {
+      chatLastIndex = 0;
+    } else {
+      chatLastIndex = chat.conversation.length - chatConverstions.length;
+    }
+  } else {
+    chatLastIndex = null;
+  }
 
   const userInfo = {
     id: userId,
@@ -31,6 +47,7 @@ exports.getDetailInfo = async (userId, memoroomId) => {
       content: memo.content,
       formType: memo.formType,
       location: memo.location,
+      alarmDate: memo.alarmDate,
       room: memo.room,
       size: memo.size,
       tags: memo.tags,
@@ -43,6 +60,8 @@ exports.getDetailInfo = async (userId, memoroomId) => {
     memos: refinedMemos,
     slackToken: memoRooms.slackToken,
     name: memoRooms.name,
+    chats: chatConverstions,
+    chatLastIndex,
   };
 };
 
@@ -97,6 +116,18 @@ exports.deleteMemo = async ({ memoroomId, memoId }) => {
   await MemoRoom.findByIdAndUpdate(memoroomId, {
     $pull: { memos: memoId },
   });
+};
+
+exports.updateMemoLocation = async ({ memoId, left, top }) => {
+  await Memo.findByIdAndUpdate(memoId, { location: [left, top] }).exec();
+};
+
+exports.updateMemoSize = async ({ memoId, width, height }) => {
+  await Memo.findByIdAndUpdate(memoId, { size: [width, height] }).exec();
+};
+
+exports.updateMemoText = async ({ memoId, text }) => {
+  await Memo.findByIdAndUpdate(memoId, { content: text }).exec();
 };
 
 exports.addAudioFile = async ({ memoId, awsAudioUrl }) => {

@@ -29,17 +29,6 @@ exports.getAllMemoRoomDetail = async (req, res, next) => {
       data: memoRoomDetail,
     });
   } catch (err) {
-    if (err.name === "MongoServerError") {
-      res.status(400).json({
-        result: "fail",
-        error: {
-          message: "Database Error",
-        },
-      });
-
-      return;
-    }
-
     next(createError(500, "Invalid Server Error"));
   }
 };
@@ -77,7 +66,6 @@ exports.addNewMemo = async (req, res, next) => {
 
   function makeUTC(date, time) {
     if (!date && !time) return "";
-
     const currentTime = new Date(`${date} ${time}`);
 
     return currentTime.getTime() + currentTime.getTimezoneOffset() * 60 * 1000;

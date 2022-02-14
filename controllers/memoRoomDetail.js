@@ -29,17 +29,6 @@ exports.getAllMemoRoomDetail = async (req, res, next) => {
       data: memoRoomDetail,
     });
   } catch (err) {
-    if (err.name === "MongoServerError") {
-      res.status(400).json({
-        result: "fail",
-        error: {
-          message: "Database Error",
-        },
-      });
-
-      return;
-    }
-
     next(createError(500, "Invalid Server Error"));
   }
 };

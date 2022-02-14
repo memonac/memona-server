@@ -31,7 +31,7 @@ const MemoSchema = new Schema({
     type: String,
     required: [true, "color must be require"],
   },
-  alarmDate: Date,
+  alarmDate: Number,
   tags: [
     {
       type: String,

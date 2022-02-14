@@ -36,14 +36,12 @@ router.post(
   nodemailerController.postSendMail
 );
 router.post("/:memoroomId/invite", nodemailerController.postVerifyToken);
-
 router.post(
   "/:userId/memorooms/:memoroomId/memo",
   uploadToAwsS3.single("imageFile"),
   checkNewMemoInputValue,
   memoRoomDetailController.addNewMemo
 );
-
 router.delete(
   "/:userId/memorooms/:memoroomId/memos/:memoId",
   memoRoomDetailController.deleteMemo

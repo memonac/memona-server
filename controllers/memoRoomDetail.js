@@ -75,14 +75,19 @@ exports.addNewMemo = async (req, res, next) => {
     return;
   }
 
-  const currentTime = new Date(`${alarmDate} ${alarmTime}`);
+  function makeUTC(date, time) {
+    if (!date && !time) return "";
+
+    const currentTime = new Date(`${date} ${time}`);
+
+    return currentTime.getTime() + currentTime.getTimezoneOffset() * 60 * 1000;
+  }
 
   try {
     const newMemo = await memoRoomDetailService.addNewMemo({
       userId,
       memoroomId,
-      alarmDateInfo:
-        currentTime.getTime() + currentTime.getTimezoneOffset() * 60 * 1000,
+      alarmDateInfo: makeUTC(alarmDate, alarmTime),
       imageFile: awsImageUrl,
       memoColor,
       memoTags,
@@ -123,6 +128,44 @@ exports.deleteMemo = async (req, res, next) => {
 
     res.json({
       result: "success",
+    });
+  } catch (err) {
+    next(createError(500, "Invalid Server Error"));
+  }
+};
+
+exports.addAudioFile = async (req, res, next) => {
+  const { userId, memoroomId, memoId } = req.params;
+
+  if (
+    !ObjectId.isValid(userId) ||
+    !ObjectId.isValid(memoroomId) ||
+    !ObjectId.isValid(memoId)
+  ) {
+    res.status(400).json({
+      result: "fail",
+      error: {
+        message: "Not Valid ObjectId",
+      },
+    });
+
+    return;
+  }
+  try {
+    const awsAudioUrl = req.file ? req.file.location : "";
+    await memoRoomDetailService.addAudioFile({
+      memoId,
+      awsAudioUrl,
+    });
+
+    res.json({
+      result: "success",
+      data: {
+        userId,
+        memoroomId,
+        memoId,
+        audioUrl: awsAudioUrl,
+      },
     });
   } catch (err) {
     next(createError(500, "Invalid Server Error"));

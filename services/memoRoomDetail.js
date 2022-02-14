@@ -98,3 +98,7 @@ exports.deleteMemo = async ({ memoroomId, memoId }) => {
     $pull: { memos: memoId },
   });
 };
+
+exports.addAudioFile = async ({ memoId, awsAudioUrl }) => {
+  await Memo.findByIdAndUpdate(memoId, { content: awsAudioUrl }).exec();
+};

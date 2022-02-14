@@ -1,4 +1,3 @@
-// routes
 const express = require("express");
 const router = express.Router();
 
@@ -9,6 +8,7 @@ const checkInputValue = require("./middlewares/checkInputValue");
 const checkNewMemoInputValue = require("./middlewares/checkNewMemoInputValue");
 const checkEmail = require("./middlewares/checkEmail");
 const uploadToAwsS3 = require("../routes/middlewares/fileUploadToAWS");
+const audioUploadToAwsS3 = require("../routes/middlewares/audioUplodadToAWS");
 
 router.get("/:userId/memorooms", memoRoomController.getAllMemoRooms);
 router.post(
@@ -46,6 +46,12 @@ router.post(
 router.delete(
   "/:userId/memorooms/:memoroomId/memos/:memoId",
   memoRoomDetailController.deleteMemo
+);
+
+router.post(
+  "/:userId/memorooms/:memoroomId/memos/:memoId/sound",
+  audioUploadToAwsS3.single("audio"),
+  memoRoomDetailController.addAudioFile
 );
 
 // router.get("/:userId/memorooms/:memoroomId/memo/:memoId", memoRoomController.getMemoRoom);

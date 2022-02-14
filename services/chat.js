@@ -47,12 +47,12 @@ exports.addChat = async ({ roomId, userId, userName, message, date }) => {
 };
 
 exports.getNextChatList = async (roomId, lastIndex) => {
-  const chat = await Chat.findOne({ room: roomId }).lean().exec();
+  const targetChat = await Chat.findOne({ room: roomId }).lean().exec();
 
   const startIndex = lastIndex - 15 < 0 ? 0 : lastIndex - 15;
   const endIndex = lastIndex;
 
-  const chatConversation = chat.conversation.slice(startIndex, endIndex);
+  const chatConversation = targetChat.conversation.slice(startIndex, endIndex);
 
   return {
     chats: chatConversation,

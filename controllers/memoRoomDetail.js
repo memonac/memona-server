@@ -115,6 +115,36 @@ exports.deleteMemo = async (req, res, next) => {
   }
 };
 
+exports.updateMemoText = async (req, res, next) => {
+  const { userId, memoroomId, memoId } = req.params;
+  const { text } = req.body;
+
+  if (
+    !ObjectId.isValid(userId) ||
+    !ObjectId.isValid(memoroomId) ||
+    !ObjectId.isValid(memoId)
+  ) {
+    res.status(400).json({
+      result: "fail",
+      error: {
+        message: "Not Valid ObjectId",
+      },
+    });
+
+    return;
+  }
+
+  try {
+    await memoRoomDetailService.updateMemoText({ memoId, text });
+
+    res.json({
+      result: "success",
+    });
+  } catch (err) {
+    next(createError(500, "Invalid Server Error"));
+  }
+};
+
 exports.updateMemoStyle = async (req, res, next) => {
   const { userId, memoroomId, memoId } = req.params;
   const { memoColor, alarmDate, memoTags } = req.body;
@@ -152,7 +182,6 @@ exports.updateMemoStyle = async (req, res, next) => {
       },
     });
   } catch (err) {
-    console.log(err.stack);
     next(createError(500, "Invalid Server Error"));
   }
 };

@@ -46,7 +46,11 @@ router.delete(
   memoRoomDetailController.deleteMemo
 );
 router.put(
-  "/:userId/memorooms/:memoroomId/memos/:memoId",
+  "/:userId/memorooms/:memoroomId/memos/:memoId/text",
+  memoRoomDetailController.updateMemoText
+);
+router.put(
+  "/:userId/memorooms/:memoroomId/memos/:memoId/style",
   memoRoomDetailController.updateMemoStyle
 );
 // router.get("/:userId/memorooms/:memoroomId/memo/:memoId", memoRoomController.getMemoRoom);

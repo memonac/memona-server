@@ -56,9 +56,9 @@ router.put(
   "/:userId/memorooms/:memoroomId/memos/:memoId/size",
   memoRoomDetailController.updateMemoSize
 );
-// router.put(
-//   "/:userId/memorooms/:memoroomId/memos/:memoId/location",
-//   memoRoomDetailController.updateMemoLocation
-// );
+router.put(
+  "/:userId/memorooms/:memoroomId/memos/:memoId/location",
+  memoRoomDetailController.updateMemoLocation
+);
 
 module.exports = router;

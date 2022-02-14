@@ -1,4 +1,3 @@
-// routes
 const express = require("express");
 const router = express.Router();
 
@@ -53,6 +52,13 @@ router.put(
   "/:userId/memorooms/:memoroomId/memos/:memoId/style",
   memoRoomDetailController.updateMemoStyle
 );
-// router.get("/:userId/memorooms/:memoroomId/memo/:memoId", memoRoomController.getMemoRoom);
+router.put(
+  "/:userId/memorooms/:memoroomId/memos/:memoId/size",
+  memoRoomDetailController.updateMemoSize
+);
+// router.put(
+//   "/:userId/memorooms/:memoroomId/memos/:memoId/location",
+//   memoRoomDetailController.updateMemoLocation
+// );
 
 module.exports = router;

@@ -185,3 +185,37 @@ exports.updateMemoStyle = async (req, res, next) => {
     next(createError(500, "Invalid Server Error"));
   }
 };
+
+exports.updateMemoSize = async (req, res, next) => {
+  const { userId, memoroomId, memoId } = req.params;
+  const { width, height } = req.body;
+
+  if (
+    !ObjectId.isValid(userId) ||
+    !ObjectId.isValid(memoroomId) ||
+    !ObjectId.isValid(memoId)
+  ) {
+    res.status(400).json({
+      result: "fail",
+      error: {
+        message: "Not Valid ObjectId",
+      },
+    });
+
+    return;
+  }
+
+  try {
+    await memoRoomDetailService.updateMemoSize({
+      memoId,
+      width,
+      height,
+    });
+
+    res.json({
+      result: "success",
+    });
+  } catch (err) {
+    next(createError(500, "Invalid Server Error"));
+  }
+};

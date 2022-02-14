@@ -27,16 +27,24 @@ module.exports = function createSocket(server, app) {
     });
 
     socket.on("send message", async (message, date) => {
-      socket
-        .to(socket.roomId)
-        .emit("receive message", socket.userId, socket.userName, message, date);
-      await chatService.addChat({
+      const chat = await chatService.addChat({
         roomId: socket.roomId,
         userId: socket.userId,
         userName: socket.userName,
         message,
         date,
       });
+
+      chatSpace
+        .to(socket.roomId)
+        .emit(
+          "receive message",
+          socket.userId,
+          socket.userName,
+          message,
+          date,
+          chat._id.toString()
+        );
     });
   });
 

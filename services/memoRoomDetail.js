@@ -26,11 +26,6 @@ exports.getDetailInfo = async (userId, memoroomId) => {
     chatLastIndex = null;
   }
 
-  // const userInfo = {
-  //   id: userId,
-  //   name: user.name,
-  //   email: user.email,
-  // };
   const participants = {};
   memoRooms.participants.map((participant) => {
     participants[participant._id] = {

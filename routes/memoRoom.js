@@ -4,61 +4,110 @@ const router = express.Router();
 const memoRoomController = require("../controllers/memoRoom");
 const memoRoomDetailController = require("../controllers/memoRoomDetail");
 const nodemailerController = require("../controllers/nodemailer");
-const checkInputValue = require("./middlewares/checkInputValue");
-const checkNewMemoInputValue = require("./middlewares/checkNewMemoInputValue");
-const checkEmail = require("./middlewares/checkEmail");
+
+const validator = require("./middlewares/validator");
+const {
+  checkMemoNameValue,
+  checkChatTextValue,
+  checkEmail,
+  checkNewMemoInputValue,
+  checkMemoStyleValue,
+  checkSizeValue,
+  checkLocationValue,
+} = require("./middlewares/inputValidaionList");
 const uploadToAwsS3 = require("../routes/middlewares/fileUploadToAWS");
 const chatController = require("../controllers/chat");
 const audioUploadToAwsS3 = require("../routes/middlewares/audioUplodadToAWS");
 
-router.get("/:userId/memorooms", memoRoomController.getAllMemoRooms);
+const verifyToken = require("./middlewares/verifyToken");
+
+router.get(
+  "/:userId/memorooms",
+  verifyToken,
+  memoRoomController.getAllMemoRooms
+);
 router.post(
   "/:userId/memorooms",
-  checkInputValue,
+  verifyToken,
+  validator(checkMemoNameValue),
   memoRoomController.addNewMemoRoom
 );
 router.get(
   "/:userId/memorooms/:memoroomId",
+  verifyToken,
   memoRoomDetailController.getAllMemoRoomDetail
 );
 router.put(
   "/:userId/memorooms/:memoroomId",
-  checkInputValue,
+  verifyToken,
+  validator(checkMemoNameValue),
   memoRoomController.updateMemoRoomTitle
 );
 router.delete(
   "/:userId/memorooms/:memoroomId",
+  verifyToken,
   memoRoomController.removeMemoRoom
 );
 router.post(
   "/:userId/memorooms/:memoroomId/invite",
+  verifyToken,
+  validator(checkEmail),
   checkEmail,
   nodemailerController.postSendMail
 );
-router.post("/:memoroomId/invite", nodemailerController.postVerifyToken);
+router.post(
+  "/:memoroomId/invite",
+  verifyToken,
+  nodemailerController.postVerifyToken
+);
 router.post(
   "/:userId/memorooms/:memoroomId/memo",
+  verifyToken,
   uploadToAwsS3.single("imageFile"),
-  checkNewMemoInputValue,
+  validator(checkNewMemoInputValue),
   memoRoomDetailController.addNewMemo
 );
 router.delete(
   "/:userId/memorooms/:memoroomId/memos/:memoId",
+  verifyToken,
   memoRoomDetailController.deleteMemo
+);
+router.put(
+  "/:userId/memorooms/:memoroomId/memos/:memoId/text",
+  verifyToken,
+  validator(checkChatTextValue),
+  memoRoomDetailController.updateMemoText
+);
+router.put(
+  "/:userId/memorooms/:memoroomId/memos/:memoId/style",
+  verifyToken,
+  validator(checkMemoStyleValue),
+  memoRoomDetailController.updateMemoStyle
+);
+router.put(
+  "/:userId/memorooms/:memoroomId/memos/:memoId/size",
+  verifyToken,
+  validator(checkSizeValue),
+  memoRoomDetailController.updateMemoSize
+);
+router.put(
+  "/:userId/memorooms/:memoroomId/memos/:memoId/location",
+  verifyToken,
+  validator(checkLocationValue),
+  memoRoomDetailController.updateMemoLocation
+);
+
+router.get(
+  "/:userId/memorooms/:memoroomId/chats/:chatLastIndex",
+  verifyToken,
+  chatController.getChats
 );
 
 router.post(
   "/:userId/memorooms/:memoroomId/memos/:memoId/sound",
+  verifyToken,
   audioUploadToAwsS3.single("audio"),
   memoRoomDetailController.addAudioFile
-);
-
-// router.get("/:userId/memorooms/:memoroomId/memo/:memoId", memoRoomController.getMemoRoom);
-// router.put("/:userId/memorooms/:memoroomId/:memoId", memoRoomController.getMemoRoom);
-
-router.get(
-  "/:userId/memorooms/:memoroomId/chats/:chatLastIndex",
-  chatController.getChats
 );
 
 module.exports = router;

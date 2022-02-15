@@ -3,11 +3,10 @@ const jwt = require("jsonwebtoken");
 
 const nodemailerService = require("../services/nodemailer");
 const transporter = require("../configs/nodemailer");
-const { validationResult } = require("express-validator");
 
 exports.postSendMail = async (req, res, next) => {
   const { email } = req.body;
-  const errors = validationResult(req);
+
   const user = await nodemailerService.verifyUser(email);
 
   if (!user) {
@@ -15,19 +14,6 @@ exports.postSendMail = async (req, res, next) => {
       result: "fail",
       error: {
         message: "Not Found User",
-      },
-    });
-
-    return;
-  }
-
-  if (!errors.isEmpty()) {
-    const inputError = errors.errors[0];
-
-    res.status(400).json({
-      result: "fail",
-      error: {
-        message: inputError.msg,
       },
     });
 

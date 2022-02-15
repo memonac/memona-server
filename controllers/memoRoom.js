@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
 const { ObjectId } = mongoose.Types;
 const createError = require("http-errors");
-const { validationResult } = require("express-validator");
 
 const memoRoomService = require("../services/memoRoom");
 const memoRoomDetail = require("../services/memoRoomDetail");
@@ -47,26 +46,11 @@ exports.addNewMemoRoom = async (req, res, next) => {
   const { userId } = req.params;
   const { name } = req.body;
 
-  const errors = validationResult(req);
-
   if (!ObjectId.isValid(userId)) {
     res.status(400).json({
       result: "fail",
       error: {
         message: "Not Valid ObjectId",
-      },
-    });
-
-    return;
-  }
-
-  if (!errors.isEmpty()) {
-    const inputError = errors.errors[0];
-
-    res.status(400).json({
-      result: "fail",
-      error: {
-        message: inputError.msg,
       },
     });
 
@@ -102,26 +86,11 @@ exports.updateMemoRoomTitle = async (req, res, next) => {
   const { userId, memoroomId } = req.params;
   const { name } = req.body;
 
-  const errors = validationResult(req);
-
   if (!ObjectId.isValid(userId) || !ObjectId.isValid(memoroomId)) {
     res.status(400).json({
       result: "fail",
       error: {
         message: "Not Valid ObjectId",
-      },
-    });
-
-    return;
-  }
-
-  if (!errors.isEmpty()) {
-    const inputError = errors.errors[0];
-
-    res.status(400).json({
-      result: "fail",
-      error: {
-        message: inputError.msg,
       },
     });
 

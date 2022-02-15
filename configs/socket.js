@@ -49,7 +49,6 @@ module.exports = function createSocket(server, app) {
   });
 
   memoSpace.on("connection", (socket) => {
-    // 메모 위치 수정하는데 이렇게 필요한가 >?
     socket.on("join room", (userId, userName, roomId) => {
       socket.userId = userId;
       socket.userName = userName;
@@ -65,36 +64,24 @@ module.exports = function createSocket(server, app) {
 
     socket.on("memo/location", async (memoId, left, top) => {
       socket.to(socket.roomId).emit("memo/location", memoId, left, top);
-      await memoRoomDetailService.updateMemoLocation({
-        memoId,
-        left,
-        top,
-      });
     });
 
     socket.on("memo/delete", async (memoId) => {
       socket.to(socket.roomId).emit("memo/delete", memoId);
-      await memoRoomDetailService.deleteMemo({
-        memoroomId: socket.roomId,
-        memoId,
-      });
     });
 
     socket.on("memo/size", async (memoId, width, height) => {
       socket.to(socket.roomId).emit("memo/size", memoId, width, height);
-      await memoRoomDetailService.updateMemoSize({
-        memoId,
-        width,
-        height,
-      });
     });
 
     socket.on("memo/text", async (memoId, text) => {
       socket.to(socket.roomId).emit("memo/text", memoId, text);
-      await memoRoomDetailService.updateMemoText({
-        memoId,
-        text,
-      });
+    });
+
+    socket.on("memo/style", async (memoId, memoColor, alarmDate, tags) => {
+      socket
+        .to(socket.roomId)
+        .emit("memo/style", memoId, memoColor, alarmDate, tags);
     });
 
     socket.on("memo/add", async (newMemo) => {

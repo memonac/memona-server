@@ -1,13 +1,20 @@
-// routes
 const express = require("express");
 const router = express.Router();
 
 const memoRoomController = require("../controllers/memoRoom");
 const memoRoomDetailController = require("../controllers/memoRoomDetail");
 const nodemailerController = require("../controllers/nodemailer");
-const checkInputValue = require("./middlewares/checkInputValue");
-const checkNewMemoInputValue = require("./middlewares/checkNewMemoInputValue");
-const checkEmail = require("./middlewares/checkEmail");
+
+const validator = require("./middlewares/validator");
+const {
+  checkMemoNameValue,
+  checkChatTextValue,
+  checkEmail,
+  checkNewMemoInputValue,
+  checkMemoStyleValue,
+  checkSizeValue,
+  checkLocationValue,
+} = require("./middlewares/inputValidaionList");
 const uploadToAwsS3 = require("../routes/middlewares/fileUploadToAWS");
 const chatController = require("../controllers/chat");
 
@@ -21,7 +28,7 @@ router.get(
 router.post(
   "/:userId/memorooms",
   verifyToken,
-  checkInputValue,
+  validator(checkMemoNameValue),
   memoRoomController.addNewMemoRoom
 );
 router.get(
@@ -32,7 +39,7 @@ router.get(
 router.put(
   "/:userId/memorooms/:memoroomId",
   verifyToken,
-  checkInputValue,
+  validator(checkMemoNameValue),
   memoRoomController.updateMemoRoomTitle
 );
 router.delete(
@@ -43,6 +50,7 @@ router.delete(
 router.post(
   "/:userId/memorooms/:memoroomId/invite",
   verifyToken,
+  validator(checkEmail),
   checkEmail,
   nodemailerController.postSendMail
 );
@@ -55,7 +63,7 @@ router.post(
   "/:userId/memorooms/:memoroomId/memo",
   verifyToken,
   uploadToAwsS3.single("imageFile"),
-  checkNewMemoInputValue,
+  validator(checkNewMemoInputValue),
   memoRoomDetailController.addNewMemo
 );
 router.delete(
@@ -63,12 +71,34 @@ router.delete(
   verifyToken,
   memoRoomDetailController.deleteMemo
 );
-
-// router.get("/:userId/memorooms/:memoroomId/memo/:memoId", memoRoomController.getMemoRoom);
-// router.put("/:userId/memorooms/:memoroomId/:memoId", memoRoomController.getMemoRoom);
+router.put(
+  "/:userId/memorooms/:memoroomId/memos/:memoId/text",
+  verifyToken,
+  validator(checkChatTextValue),
+  memoRoomDetailController.updateMemoText
+);
+router.put(
+  "/:userId/memorooms/:memoroomId/memos/:memoId/style",
+  verifyToken,
+  validator(checkMemoStyleValue),
+  memoRoomDetailController.updateMemoStyle
+);
+router.put(
+  "/:userId/memorooms/:memoroomId/memos/:memoId/size",
+  verifyToken,
+  validator(checkSizeValue),
+  memoRoomDetailController.updateMemoSize
+);
+router.put(
+  "/:userId/memorooms/:memoroomId/memos/:memoId/location",
+  verifyToken,
+  validator(checkLocationValue),
+  memoRoomDetailController.updateMemoLocation
+);
 
 router.get(
   "/:userId/memorooms/:memoroomId/chats/:chatLastIndex",
+  verifyToken,
   chatController.getChats
 );
 

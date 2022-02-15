@@ -18,7 +18,7 @@ exports.getLogin = async (req, res, next) => {
     });
 
     const refreshToken = await jwt.sign(userInfo, process.env.SECRET_KEY, {
-      expiresIn: "14d",
+      expiresIn: "7d",
     });
 
     res.cookie("accessToken", accessToken, cookieOptions);

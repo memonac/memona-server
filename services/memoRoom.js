@@ -5,10 +5,15 @@ const Chat = require("../models/Chat");
 const s3 = require("../configs/awsS3");
 
 exports.getAllMemoRoom = async (userId) => {
-  const targetUser = await User.findById(userId).populate({
-    path: "rooms",
-    populate: { path: "memos" },
-  });
+  const targetUser = await User.findById(userId)
+    .populate({
+      path: "rooms",
+      populate: { path: "memos" },
+    })
+    .populate({
+      path: "rooms",
+      populate: { path: "participants" },
+    });
 
   //flatMap으로 리팩토링 해보기 ..
   const allTags = [];
@@ -19,9 +24,14 @@ exports.getAllMemoRoom = async (userId) => {
 
     allTags.push(...memoTags);
 
+    const participants = room.participants.map(
+      (participant) => participant.name
+    );
+
     memoroomInfo[room._id] = {
       name: room.name,
       tags: Array.from(new Set(memoTags.flat(Infinity))),
+      participants: participants,
     };
   });
 

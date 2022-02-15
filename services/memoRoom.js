@@ -20,6 +20,7 @@ exports.getAllMemoRoom = async (userId) => {
     allTags.push(...memoTags);
 
     memoroomInfo[room._id] = {
+      owner: room.owner,
       name: room.name,
       tags: Array.from(new Set(memoTags.flat(Infinity))),
     };
@@ -88,6 +89,7 @@ exports.removeMemoRoom = async (userId, memoRoomId) => {
     allTags.push(...memoTags);
 
     memoroomInfo[room._id] = {
+      owner: room.owner,
       name: room.name,
       tags: Array.from(new Set(memoTags.flat(Infinity))),
     };

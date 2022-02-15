@@ -1,6 +1,7 @@
 const { body } = require("express-validator");
 
 const checkMemoNameValue = [body("name", "name must be required").notEmpty()];
+const checkChatTextValue = [body("text", "text must be string").isString()];
 const checkEmail = [body("email", "Please check Email").exists().isEmail()];
 const checkNewMemoInputValue = [
   body("alarmDate", "AlramDate must be String")
@@ -35,6 +36,7 @@ const checkLocationValue = [
 
 module.exports = {
   checkMemoNameValue,
+  checkChatTextValue,
   checkEmail,
   checkNewMemoInputValue,
   checkMemoStyleValue,

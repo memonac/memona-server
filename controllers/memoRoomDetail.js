@@ -237,3 +237,39 @@ exports.updateMemoLocation = async (req, res, next) => {
     next(createError(500, "Invalid Server Error"));
   }
 };
+
+exports.addAudioFile = async (req, res, next) => {
+  const { userId, memoroomId, memoId } = req.params;
+
+  if (
+    !ObjectId.isValid(userId) ||
+    !ObjectId.isValid(memoroomId) ||
+    !ObjectId.isValid(memoId)
+  ) {
+    res.status(400).json({
+      result: "fail",
+      error: {
+        message: "Not Valid ObjectId",
+      },
+    });
+
+    return;
+  }
+  try {
+    const awsAudioUrl = req.file ? req.file.location : "";
+    await memoRoomDetailService.addAudioFile({
+      memoId,
+      awsAudioUrl,
+    });
+
+    res.json({
+      result: "success",
+      data: {
+        memoId,
+        audioUrl: awsAudioUrl,
+      },
+    });
+  } catch (err) {
+    next(createError(500, "Invalid Server Error"));
+  }
+};

@@ -142,3 +142,7 @@ exports.updateMemoSize = async ({ memoId, width, height }) => {
 exports.updateMemoText = async ({ memoId, text }) => {
   await Memo.findByIdAndUpdate(memoId, { content: text }).exec();
 };
+
+exports.addAudioFile = async ({ memoId, awsAudioUrl }) => {
+  await Memo.findByIdAndUpdate(memoId, { content: awsAudioUrl }).exec();
+};

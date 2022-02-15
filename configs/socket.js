@@ -1,6 +1,5 @@
 const { Server } = require("socket.io");
 const chatService = require("../services/chat");
-const memoRoomDetailService = require("../services/memoRoomDetail");
 
 module.exports = function createSocket(server, app) {
   const io = new Server(server, {
@@ -86,6 +85,10 @@ module.exports = function createSocket(server, app) {
 
     socket.on("memo/add", async (newMemo) => {
       socket.to(socket.roomId).emit("memo/add", newMemo);
+    });
+
+    socket.on("memo/audio", async (memoId, audioUrl) => {
+      socket.to(socket.roomId).emit("memo/audio", memoId, audioUrl);
     });
   });
 };

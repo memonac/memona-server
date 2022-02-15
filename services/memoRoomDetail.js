@@ -1,12 +1,13 @@
-const MemoRoom = require("../models/MemoRoom");
 const User = require("../models/User");
 const Chat = require("../models/Chat");
 const Memo = require("../models/Memo");
+const MemoRoom = require("../models/MemoRoom");
 const s3 = require("../configs/awsS3");
 
 exports.getDetailInfo = async (userId, memoroomId) => {
   const user = await User.findById(userId).lean().exec();
   const memoRooms = await MemoRoom.findById(memoroomId)
+    .populate("owner")
     .populate("participants")
     .populate("memos");
 
@@ -25,11 +26,11 @@ exports.getDetailInfo = async (userId, memoroomId) => {
     chatLastIndex = null;
   }
 
-  const userInfo = {
-    id: userId,
-    name: user.name,
-    email: user.email,
-  };
+  // const userInfo = {
+  //   id: userId,
+  //   name: user.name,
+  //   email: user.email,
+  // };
   const participants = {};
   memoRooms.participants.map((participant) => {
     participants[participant._id] = {
@@ -55,7 +56,7 @@ exports.getDetailInfo = async (userId, memoroomId) => {
   });
 
   return {
-    owner: userInfo,
+    owner: memoRooms.owner,
     participants: participants,
     memos: refinedMemos,
     slackToken: memoRooms.slackToken,
@@ -141,4 +142,11 @@ exports.updateMemoSize = async ({ memoId, width, height }) => {
 
 exports.updateMemoText = async ({ memoId, text }) => {
   await Memo.findByIdAndUpdate(memoId, { content: text }).exec();
+};
+
+exports.leaveMemoRoom = async ({ userId, memoroomId }) => {
+  await User.findByIdAndUpdate(userId, { $pull: { rooms: memoroomId } }).exec();
+  await MemoRoom.findByIdAndUpdate(memoroomId, {
+    $pull: { participants: userId },
+  }).exec();
 };

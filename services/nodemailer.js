@@ -10,7 +10,11 @@ exports.updateMemoRoom = async (userId, memoroomId) => {
     $push: { rooms: memoroomId },
   });
 
-  await MemoRoom.findByIdAndUpdate(memoroomId, {
-    $push: { participants: userId },
-  });
+  return await MemoRoom.findByIdAndUpdate(
+    memoroomId,
+    {
+      $push: { participants: userId },
+    },
+    { new: true }
+  ).populate("participants");
 };

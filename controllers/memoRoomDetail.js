@@ -237,3 +237,31 @@ exports.updateMemoLocation = async (req, res, next) => {
     next(createError(500, "Invalid Server Error"));
   }
 };
+
+exports.leaveMemoRoom = async (req, res, next) => {
+  const { userId, memoroomId } = req.params;
+
+  if (!ObjectId.isValid(userId) || !ObjectId.isValid(memoroomId)) {
+    res.status(400).json({
+      result: "fail",
+      error: {
+        message: "Not Valid ObjectId",
+      },
+    });
+
+    return;
+  }
+
+  try {
+    await memoRoomDetailService.leaveMemoRoom({
+      userId,
+      memoroomId,
+    });
+
+    res.json({
+      result: "success",
+    });
+  } catch (err) {
+    next(createError(500, "Invalid Server Error"));
+  }
+};

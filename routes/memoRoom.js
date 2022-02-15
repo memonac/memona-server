@@ -15,6 +15,7 @@ const {
   checkLocationValue,
 } = require("./middlewares/inputValidaionList");
 const uploadToAwsS3 = require("../routes/middlewares/fileUploadToAWS");
+const chatController = require("../controllers/chat");
 
 router.get("/:userId/memorooms", memoRoomController.getAllMemoRooms);
 router.post(
@@ -69,6 +70,11 @@ router.put(
   "/:userId/memorooms/:memoroomId/memos/:memoId/location",
   validator(checkLocationValue),
   memoRoomDetailController.updateMemoLocation
+);
+
+router.get(
+  "/:userId/memorooms/:memoroomId/chats/:chatLastIndex",
+  chatController.getChats
 );
 
 module.exports = router;

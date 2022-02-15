@@ -96,5 +96,9 @@ module.exports = function createSocket(server, app) {
         text,
       });
     });
+
+    socket.on("memo/audio", async (memoId, audioUrl) => {
+      socket.to(socket.roomId).emit("memo/audio", memoId, audioUrl);
+    });
   });
 };

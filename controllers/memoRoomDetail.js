@@ -149,8 +149,6 @@ exports.addAudioFile = async (req, res, next) => {
     res.json({
       result: "success",
       data: {
-        userId,
-        memoroomId,
         memoId,
         audioUrl: awsAudioUrl,
       },

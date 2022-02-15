@@ -1,22 +1,28 @@
 const createError = require("http-errors");
+const jwt = require("jsonwebtoken");
 
 const userService = require("../services/auth");
 
 exports.getLogin = async (req, res, next) => {
-  const { userInfo, accessToken, refreshToken } = res.locals;
+  const { userInfo } = res.locals;
 
   const cookieOptions = {
     httpOnly: true,
   };
 
-  res.cookie("token", accessToken, cookieOptions);
-
-  if (userInfo) {
-    userInfo.refreshToken = refreshToken;
-  }
-
   try {
     const { id, name } = await userService.createUser(userInfo);
+
+    const accessToken = await jwt.sign(userInfo, process.env.SECRET_KEY, {
+      expiresIn: "2h",
+    });
+
+    const refreshToken = await jwt.sign(userInfo, process.env.SECRET_KEY, {
+      expiresIn: "14d",
+    });
+
+    res.cookie("accessToken", accessToken, cookieOptions);
+    res.cookie("refreshToken", refreshToken, cookieOptions);
 
     res.json({
       result: "success",
@@ -43,23 +49,26 @@ exports.getLogin = async (req, res, next) => {
 
 exports.postSignup = async (req, res, next) => {
   const { name } = req.body;
-
-  const { userInfo, accessToken, refreshToken } = res.locals;
-
+  const { userInfo } = res.locals;
   const cookieOptions = {
     httpOnly: true,
   };
-
-  res.cookie("token", accessToken, cookieOptions);
-
-  if (userInfo) {
-    userInfo.refreshToken = refreshToken;
-  }
 
   userInfo.name = name;
 
   try {
     const { id } = await userService.createUser(userInfo);
+
+    const accessToken = await jwt.sign(userInfo, process.env.SECRET_KEY, {
+      expiresIn: "2h",
+    });
+
+    const refreshToken = await jwt.sign(userInfo, process.env.SECRET_KEY, {
+      expiresIn: "7d",
+    });
+
+    res.cookie("accessToken", accessToken, cookieOptions);
+    res.cookie("refreshToken", refreshToken, cookieOptions);
 
     res.json({
       result: "success",
@@ -86,7 +95,8 @@ exports.postSignup = async (req, res, next) => {
 
 exports.getLogout = (req, res, next) => {
   try {
-    res.clearCookie("token");
+    res.clearCookie("accessToken");
+    res.clearCookie("refreshToken");
 
     res.json({
       result: "success",

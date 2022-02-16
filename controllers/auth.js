@@ -32,7 +32,7 @@ exports.getLogin = async (req, res, next) => {
       },
     });
   } catch (err) {
-    if (err.name === "MongoServerError" || err.name === "ValidationError") {
+    if (err.name === "ValidationError") {
       res.status(400).json({
         result: "fail",
         error: {
@@ -80,7 +80,7 @@ exports.postSignup = async (req, res, next) => {
       },
     });
   } catch (err) {
-    if (err.name === "MongoServerError" || err.name === "ValidationError") {
+    if (err.name === "ValidationError") {
       res.status(400).json({
         result: "fail",
         error: {

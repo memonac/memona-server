@@ -4,7 +4,9 @@ const router = express.Router();
 const memoRoomController = require("../controllers/memoRoom");
 const memoRoomDetailController = require("../controllers/memoRoomDetail");
 const nodemailerController = require("../controllers/nodemailer");
-
+const chatController = require("../controllers/chat");
+const uploadToAwsS3 = require("../routes/middlewares/fileUploadToAWS");
+const audioUploadToAwsS3 = require("./middlewares/audioUploadToAWS");
 const validator = require("./middlewares/validator");
 const {
   checkMemoNameValue,
@@ -14,9 +16,6 @@ const {
   checkSizeValue,
   checkLocationValue,
 } = require("./middlewares/inputValidaionList");
-const uploadToAwsS3 = require("../routes/middlewares/fileUploadToAWS");
-const chatController = require("../controllers/chat");
-const audioUploadToAwsS3 = require("../routes/middlewares/audioUplodadToAWS");
 
 const verifyToken = require("./middlewares/verifyToken");
 

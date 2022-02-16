@@ -4,7 +4,7 @@ const checkMemoNameValue = [body("name", "name must be required").notEmpty()];
 const checkChatTextValue = [body("text", "text must be string").isString()];
 const checkEmail = [body("email", "Please check Email").exists().isEmail()];
 const checkNewMemoInputValue = [
-  body("alarmDate", "AlramDate must be String")
+  body("alarmDate", "AlarmDate must be String")
     .optional({ checkFalsy: true })
     .isString(),
   body("memoColor", "Memo Color should be colorCode").isHexColor(),
@@ -17,7 +17,7 @@ const checkNewMemoInputValue = [
 ];
 
 const checkMemoStyleValue = [
-  body("alarmDate", "AlramDate must be String")
+  body("alarmDate", "AlarmDate must be String")
     .optional({ checkFalsy: true })
     .isString(),
   body("memoColor", "Memo Color should be colorCode").isHexColor(),

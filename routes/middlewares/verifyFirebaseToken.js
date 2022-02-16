@@ -1,4 +1,5 @@
 const createError = require("http-errors");
+
 const { authenication } = require("../../configs/firebase");
 
 const verifyFirebaseToken = async (req, res, next) => {

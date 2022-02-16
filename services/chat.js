@@ -1,5 +1,4 @@
 const Chat = require("../models/Chat");
-const MemoRoom = require("../models/MemoRoom");
 
 exports.addChat = async ({ roomId, userId, userName, message, date }) => {
   const chat = await Chat.findOne({ room: roomId }).lean().exec();

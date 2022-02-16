@@ -1,5 +1,6 @@
 const multer = require("multer");
 const multerS3 = require("multer-s3");
+
 const s3 = require("../../configs/awsS3");
 
 const storage = multerS3({

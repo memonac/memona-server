@@ -41,7 +41,7 @@ exports.removeMemoRoom = async (userId, memoRoomId) => {
   const Memos = await Memo.find({ room: memoRoomId }).lean().exec();
 
   Memos.forEach((memo) => {
-    if (memo.formType !== "text") {
+    if (memo.content && memo.formType !== "text") {
       const splitedUrl = memo.content.split("/");
 
       s3.deleteObject(
@@ -61,10 +61,15 @@ exports.removeMemoRoom = async (userId, memoRoomId) => {
   await User.updateMany({}, { $pull: { rooms: memoRoomId } }).exec();
   await MemoRoom.findByIdAndRemove(memoRoomId).exec();
 
-  const targetUser = await User.findById(userId).populate({
-    path: "rooms",
-    populate: { path: "memos" },
-  });
+  const targetUser = await User.findById(userId)
+    .populate({
+      path: "rooms",
+      populate: { path: "memos" },
+    })
+    .populate({
+      path: "rooms",
+      populate: { path: "participants" },
+    });
 
   return formatMemoRoomData(targetUser);
 };

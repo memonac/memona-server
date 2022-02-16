@@ -7,10 +7,15 @@ function formatMemoRoomData(userData) {
 
     allTags.push(...memoTags);
 
+    const participants = room.participants.map(
+      (participant) => participant.name
+    );
+
     memoroomInfo[room._id] = {
-      owner: room.owner,
       name: room.name,
+      owner: room.owner,
       tags: Array.from(new Set(memoTags.flat(Infinity))),
+      participants: participants,
     };
   });
 

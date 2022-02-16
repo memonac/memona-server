@@ -94,7 +94,7 @@ exports.deleteMemo = async ({ memoroomId, memoId }) => {
   const targetMemo = await Memo.findById(memoId).lean().exec();
 
   // aws s3 저장파일 분기처리(단일파일 삭제하는 경우)
-  if (targetMemo.formType !== "text") {
+  if (targetMemo.content && targetMemo.formType !== "text") {
     const splitedUrl = targetMemo.content.split("/");
 
     s3.deleteObject(

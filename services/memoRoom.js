@@ -63,7 +63,7 @@ exports.removeMemoRoom = async (userId, memoRoomId) => {
   const Memos = await Memo.find({ room: memoRoomId }).lean().exec();
 
   Memos.forEach((memo) => {
-    if (memo.formType !== "text") {
+    if (memo.content && memo.formType !== "text") {
       const splitedUrl = memo.content.split("/");
 
       s3.deleteObject(

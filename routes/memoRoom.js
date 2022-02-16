@@ -4,8 +4,8 @@ const router = express.Router();
 const memoRoomController = require("../controllers/memoRoom");
 const memoRoomDetailController = require("../controllers/memoRoomDetail");
 const nodemailerController = require("../controllers/nodemailer");
-const uploadToAwsS3 = require("../routes/middlewares/fileUploadToAWS");
 const chatController = require("../controllers/chat");
+const uploadToAwsS3 = require("../routes/middlewares/fileUploadToAWS");
 const audioUploadToAwsS3 = require("./middlewares/audioUploadToAWS");
 const validator = require("./middlewares/validator");
 const {

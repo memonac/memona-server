@@ -3,7 +3,6 @@ const { ObjectId } = mongoose.Types;
 const createError = require("http-errors");
 
 const memoRoomService = require("../services/memoRoom");
-const memoRoomDetail = require("../services/memoRoomDetail");
 
 exports.getAllMemoRooms = async (req, res, next) => {
   try {

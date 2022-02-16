@@ -90,18 +90,24 @@ exports.postVerifyToken = async (req, res, next) => {
     const user = await nodemailerService.verifyUser(email);
     const userId = user._id;
 
-    await nodemailerService.updateMemoRoom(userId, memoroomId);
+    const updatedMemoRoom = await nodemailerService.updateMemoRoom(
+      userId,
+      memoroomId
+    );
 
     const userInfo = {};
-    userInfo[userId] = {
-      name: user.name,
-      email: user.email,
-    };
+
+    updatedMemoRoom.participants.forEach((participant) => {
+      userInfo[participant._id] = {
+        name: participant.name,
+        email: participant.email,
+      };
+    });
 
     res.json({
       result: "success",
       data: {
-        userInfo,
+        participants: userInfo,
       },
     });
   } catch (err) {

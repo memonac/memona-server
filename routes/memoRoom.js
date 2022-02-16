@@ -10,7 +10,6 @@ const audioUploadToAwsS3 = require("./middlewares/audioUploadToAWS");
 const validator = require("./middlewares/validator");
 const {
   checkMemoNameValue,
-  checkChatTextValue,
   checkEmail,
   checkNewMemoInputValue,
   checkMemoStyleValue,
@@ -59,6 +58,11 @@ router.post(
   verifyToken,
   nodemailerController.postVerifyToken
 );
+router.put(
+  "/:userId/memorooms/:memoroomId/leave",
+  verifyToken,
+  memoRoomDetailController.leaveMemoRoom
+);
 router.post(
   "/:userId/memorooms/:memoroomId/memo",
   verifyToken,
@@ -74,7 +78,6 @@ router.delete(
 router.put(
   "/:userId/memorooms/:memoroomId/memos/:memoId/text",
   verifyToken,
-  validator(checkChatTextValue),
   memoRoomDetailController.updateMemoText
 );
 router.put(

@@ -61,6 +61,16 @@ module.exports = function createSocket(server, app) {
       socket.leave(roomId);
     });
 
+    socket.on("withdraw room", async (userId) => {
+      memoSpace.to(socket.roomId).emit("withdraw room", userId);
+    });
+
+    socket.on("update participants", async (participants, memoroomId) => {
+      memoSpace
+        .to(memoroomId)
+        .emit("update participants", participants, memoroomId);
+    });
+
     socket.on("memo/location", async (memoId, left, top) => {
       socket.to(socket.roomId).emit("memo/location", memoId, left, top);
     });

@@ -3,6 +3,7 @@ const Memo = require("../models/Memo");
 const MemoRoom = require("../models/MemoRoom");
 const Chat = require("../models/Chat");
 const s3 = require("../configs/awsS3");
+const formatMemoRoomData = require("../utils/formatMemoRoomData");
 
 exports.getAllMemoRoom = async (userId) => {
   const targetUser = await User.findById(userId)
@@ -15,30 +16,7 @@ exports.getAllMemoRoom = async (userId) => {
       populate: { path: "participants" },
     });
 
-  //flatMap으로 리팩토링 해보기 ..
-  const allTags = [];
-  const memoroomInfo = {};
-
-  targetUser.rooms.forEach((room) => {
-    const memoTags = room.memos.map((memo) => memo.tags);
-
-    allTags.push(...memoTags);
-
-    const participants = room.participants.map(
-      (participant) => participant.name
-    );
-
-    memoroomInfo[room._id] = {
-      name: room.name,
-      tags: Array.from(new Set(memoTags.flat(Infinity))),
-      participants: participants,
-    };
-  });
-
-  return {
-    tags: Array.from(new Set(allTags.flat(Infinity))),
-    memoRooms: memoroomInfo,
-  };
+  return formatMemoRoomData(targetUser);
 };
 
 exports.addNewMemoRoom = async (userId, roomName) => {
@@ -83,28 +61,15 @@ exports.removeMemoRoom = async (userId, memoRoomId) => {
   await User.updateMany({}, { $pull: { rooms: memoRoomId } }).exec();
   await MemoRoom.findByIdAndRemove(memoRoomId).exec();
 
-  const targetUser = await User.findById(userId).populate({
-    path: "rooms",
-    populate: { path: "memos" },
-  });
+  const targetUser = await User.findById(userId)
+    .populate({
+      path: "rooms",
+      populate: { path: "memos" },
+    })
+    .populate({
+      path: "rooms",
+      populate: { path: "participants" },
+    });
 
-  //flatMap으로 리팩토링 필요 (혹은 별도 유틸함수로 분리 필요)
-  const allTags = [];
-  const memoroomInfo = {};
-
-  targetUser.rooms.forEach((room) => {
-    const memoTags = room.memos.map((memo) => memo.tags);
-
-    allTags.push(...memoTags);
-
-    memoroomInfo[room._id] = {
-      name: room.name,
-      tags: Array.from(new Set(memoTags.flat(Infinity))),
-    };
-  });
-
-  return {
-    tags: Array.from(new Set(allTags.flat(Infinity))),
-    memoRooms: memoroomInfo,
-  };
+  return formatMemoRoomData(targetUser);
 };

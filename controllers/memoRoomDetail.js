@@ -35,7 +35,7 @@ exports.getAllMemoRoomDetail = async (req, res, next) => {
 
 exports.addNewMemo = async (req, res, next) => {
   const { userId, memoroomId } = req.params;
-  const { alarmDate, alarmTime, memoColor, memoTags, memoType } = req.body;
+  const { alarmDate, memoColor, memoTags, memoType } = req.body;
   const awsImageUrl = req.file ? req.file.location : "";
 
   if (!ObjectId.isValid(userId) || !ObjectId.isValid(memoroomId)) {
@@ -239,6 +239,34 @@ exports.updateMemoLocation = async (req, res, next) => {
   }
 };
 
+exports.leaveMemoRoom = async (req, res, next) => {
+  const { userId, memoroomId } = req.params;
+
+  if (!ObjectId.isValid(userId) || !ObjectId.isValid(memoroomId)) {
+    res.status(400).json({
+      result: "fail",
+      error: {
+        message: "Not Valid ObjectId",
+      },
+    });
+
+    return;
+  }
+
+  try {
+    await memoRoomDetailService.leaveMemoRoom({
+      userId,
+      memoroomId,
+    });
+
+    res.json({
+      result: "success",
+    });
+  } catch (err) {
+    next(createError(500, "Invalid Server Error"));
+  }
+};
+
 exports.addAudioFile = async (req, res, next) => {
   const { userId, memoroomId, memoId } = req.params;
 
@@ -256,6 +284,7 @@ exports.addAudioFile = async (req, res, next) => {
 
     return;
   }
+
   try {
     const awsAudioUrl = req.file ? req.file.location : "";
     await memoRoomDetailService.addAudioFile({

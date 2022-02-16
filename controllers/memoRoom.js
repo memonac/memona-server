@@ -27,17 +27,6 @@ exports.getAllMemoRooms = async (req, res, next) => {
       data: memoRoom,
     });
   } catch (err) {
-    if (err.name === "MongoServerError") {
-      res.status(400).json({
-        result: "fail",
-        error: {
-          message: "Database Error",
-        },
-      });
-
-      return;
-    }
-
     next(createError(500, "Invalid Server Error"));
   }
 };
@@ -67,17 +56,6 @@ exports.addNewMemoRoom = async (req, res, next) => {
       },
     });
   } catch (err) {
-    if (err.name === "MongoServerError") {
-      res.status(400).json({
-        result: "fail",
-        error: {
-          message: "Database Error",
-        },
-      });
-
-      return;
-    }
-
     next(createError(500, "Invalid Server Error"));
   }
 };
@@ -104,17 +82,6 @@ exports.updateMemoRoomTitle = async (req, res, next) => {
       result: "success",
     });
   } catch (err) {
-    if (err.name === "MongoServerError") {
-      res.status(400).json({
-        result: "fail",
-        error: {
-          message: "Database Error",
-        },
-      });
-
-      return;
-    }
-
     next(createError(500, "Invalid Server Error"));
   }
 };
@@ -144,17 +111,6 @@ exports.removeMemoRoom = async (req, res, next) => {
       data: newMemoRooms,
     });
   } catch (err) {
-    if (err.name === "MongoServerError") {
-      res.status(400).json({
-        result: "fail",
-        error: {
-          message: "Database Error",
-        },
-      });
-
-      return;
-    }
-
     next(createError(500, "Invalid Server Error"));
   }
 };

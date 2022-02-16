@@ -96,5 +96,9 @@ module.exports = function createSocket(server, app) {
     socket.on("memo/add", async (newMemo) => {
       socket.to(socket.roomId).emit("memo/add", newMemo);
     });
+
+    socket.on("memo/audio", async (memoId, audioUrl) => {
+      socket.to(socket.roomId).emit("memo/audio", memoId, audioUrl);
+    });
   });
 };

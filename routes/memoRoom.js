@@ -8,7 +8,6 @@ const nodemailerController = require("../controllers/nodemailer");
 const validator = require("./middlewares/validator");
 const {
   checkMemoNameValue,
-  checkChatTextValue,
   checkEmail,
   checkNewMemoInputValue,
   checkMemoStyleValue,
@@ -17,6 +16,7 @@ const {
 } = require("./middlewares/inputValidaionList");
 const uploadToAwsS3 = require("../routes/middlewares/fileUploadToAWS");
 const chatController = require("../controllers/chat");
+const audioUploadToAwsS3 = require("../routes/middlewares/audioUplodadToAWS");
 
 const verifyToken = require("./middlewares/verifyToken");
 
@@ -104,6 +104,13 @@ router.get(
   "/:userId/memorooms/:memoroomId/chats/:chatLastIndex",
   verifyToken,
   chatController.getChats
+);
+
+router.post(
+  "/:userId/memorooms/:memoroomId/memos/:memoId/sound",
+  verifyToken,
+  audioUploadToAwsS3.single("audio"),
+  memoRoomDetailController.addAudioFile
 );
 
 module.exports = router;

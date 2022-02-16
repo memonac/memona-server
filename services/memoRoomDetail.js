@@ -145,3 +145,7 @@ exports.leaveMemoRoom = async ({ userId, memoroomId }) => {
     $pull: { participants: userId },
   }).exec();
 };
+
+exports.addAudioFile = async ({ memoId, awsAudioUrl }) => {
+  await Memo.findByIdAndUpdate(memoId, { content: awsAudioUrl }).exec();
+};

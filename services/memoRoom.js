@@ -6,10 +6,15 @@ const s3 = require("../configs/awsS3");
 const formatMemoRoomData = require("../utils/formatMemoRoomData");
 
 exports.getAllMemoRoom = async (userId) => {
-  const targetUser = await User.findById(userId).populate({
-    path: "rooms",
-    populate: { path: "memos" },
-  });
+  const targetUser = await User.findById(userId)
+    .populate({
+      path: "rooms",
+      populate: { path: "memos" },
+    })
+    .populate({
+      path: "rooms",
+      populate: { path: "participants" },
+    });
 
   return formatMemoRoomData(targetUser);
 };

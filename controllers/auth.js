@@ -48,7 +48,6 @@ exports.getLogin = async (req, res, next) => {
 };
 
 exports.postSignup = async (req, res, next) => {
-  // const { name } = req.body;
   const { email, name } = req.body;
   const { userInfo } = res.locals;
   const cookieOptions = {

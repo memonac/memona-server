@@ -86,7 +86,7 @@ exports.postVerifyToken = async (req, res, next) => {
       res.status(400).json({
         result: RESULT_MESSAGE.fail,
         error: {
-          message: ERROR_MESSAGE.invalidToken,
+          message: ERROR_MESSAGE.invalidInviteToken,
         },
       });
 
@@ -121,7 +121,7 @@ exports.postVerifyToken = async (req, res, next) => {
       res.status(400).json({
         result: RESULT_MESSAGE.fail,
         error: {
-          message: ERROR_MESSAGE.expiredToken,
+          message: ERROR_MESSAGE.expiredInviteToken,
         },
       });
 

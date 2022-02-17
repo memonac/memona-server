@@ -16,6 +16,8 @@ exports.ERROR_MESSAGE = {
   invalidDataCasting: "Invalid Data Casting",
   notFound: "Not Found User",
   sendMailFailure: "Failed to send mail",
+  invalidInviteToken: "Token fail verified",
+  expiredInviteToken: "Expired invite token",
   invalidFirebaseToken: "Invalid Firebase Token",
   expiredFirebaseToken: "Expired Firebase Token",
   invalidToken: "Invaild Verify Token",

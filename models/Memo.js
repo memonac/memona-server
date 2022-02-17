@@ -1,6 +1,8 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
+const { SCHEMA_MESSAGE } = require("../constants/dataValidationMessage");
+
 const MemoSchema = new Schema({
   room: {
     type: Schema.Types.ObjectId,
@@ -8,28 +10,28 @@ const MemoSchema = new Schema({
   },
   author: {
     type: Schema.Types.ObjectId,
-    required: [true, "author must be require"],
+    required: [true, SCHEMA_MESSAGE.authorError],
   },
   formType: {
     type: String,
-    required: [true, "formType must be require"],
+    required: [true, SCHEMA_MESSAGE.formTypeError],
   },
   content: String,
   location: [
     {
       type: Number,
-      required: [true, "location must be require"],
+      required: [true, SCHEMA_MESSAGE.locationError],
     },
   ],
   size: [
     {
       type: Number,
-      required: [true, "size must be require"],
+      required: [true, SCHEMA_MESSAGE.sizeError],
     },
   ],
   color: {
     type: String,
-    required: [true, "color must be require"],
+    required: [true, SCHEMA_MESSAGE.colorError],
   },
   alarmDate: String,
   tags: [

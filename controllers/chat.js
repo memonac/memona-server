@@ -3,15 +3,19 @@ const { ObjectId } = mongoose.Types;
 const createError = require("http-errors");
 
 const chatService = require("../services/chat");
+const {
+  ERROR_MESSAGE,
+  RESULT_MESSAGE,
+} = require("../constants/responseMessage");
 
 exports.getChats = async (req, res, next) => {
   const { memoroomId, chatLastIndex } = req.params;
 
   if (!ObjectId.isValid(memoroomId)) {
     res.status(400).json({
-      result: "fail",
+      result: RESULT_MESSAGE.fail,
       error: {
-        message: "Not Valid ObjectId",
+        message: ERROR_MESSAGE.invalidObjectId,
       },
     });
 
@@ -25,10 +29,10 @@ exports.getChats = async (req, res, next) => {
     );
 
     res.json({
-      result: "success",
+      result: RESULT_MESSAGE.success,
       data: nextChatInfo,
     });
   } catch (err) {
-    next(createError(500, "Invalid Server Error"));
+    next(createError(500, ERROR_MESSAGE.invalidServerError));
   }
 };

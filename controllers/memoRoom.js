@@ -3,6 +3,11 @@ const { ObjectId } = mongoose.Types;
 const createError = require("http-errors");
 
 const memoRoomService = require("../services/memoRoom");
+const {
+  ERROR_TYPE,
+  ERROR_MESSAGE,
+  RESULT_MESSAGE,
+} = require("../constants/responseMessage");
 
 exports.getAllMemoRooms = async (req, res, next) => {
   try {
@@ -10,9 +15,9 @@ exports.getAllMemoRooms = async (req, res, next) => {
 
     if (!ObjectId.isValid(userId)) {
       res.status(400).json({
-        result: "fail",
+        result: RESULT_MESSAGE.fail,
         error: {
-          message: "Not Valid ObjectId",
+          message: ERROR_MESSAGE.invalidObjectId,
         },
       });
 
@@ -22,11 +27,11 @@ exports.getAllMemoRooms = async (req, res, next) => {
     const memoRoom = await memoRoomService.getAllMemoRoom(userId);
 
     res.json({
-      result: "success",
+      result: RESULT_MESSAGE.success,
       data: memoRoom,
     });
   } catch (err) {
-    next(createError(500, "Invalid Server Error"));
+    next(createError(500, ERROR_MESSAGE.invalidServerError));
   }
 };
 
@@ -36,9 +41,9 @@ exports.addNewMemoRoom = async (req, res, next) => {
 
   if (!ObjectId.isValid(userId)) {
     res.status(400).json({
-      result: "fail",
+      result: RESULT_MESSAGE.fail,
       error: {
-        message: "Not Valid ObjectId",
+        message: ERROR_MESSAGE.invalidObjectId,
       },
     });
 
@@ -49,24 +54,24 @@ exports.addNewMemoRoom = async (req, res, next) => {
     const newMemoRoomId = await memoRoomService.addNewMemoRoom(userId, name);
 
     res.json({
-      result: "success",
+      result: RESULT_MESSAGE.success,
       data: {
         newMemoRoomId,
       },
     });
   } catch (err) {
-    if (err.name === "ValidationError") {
+    if (err.name === ERROR_TYPE.validationError) {
       res.status(400).json({
-        result: "fail",
+        result: RESULT_MESSAGE.fail,
         error: {
-          message: "Invalid Mongoose Validation",
+          message: ERROR_MESSAGE.validationError,
         },
       });
 
       return;
     }
 
-    next(createError(500, "Invalid Server Error"));
+    next(createError(500, ERROR_MESSAGE.invalidServerError));
   }
 };
 
@@ -76,9 +81,9 @@ exports.updateMemoRoomTitle = async (req, res, next) => {
 
   if (!ObjectId.isValid(userId) || !ObjectId.isValid(memoroomId)) {
     res.status(400).json({
-      result: "fail",
+      result: RESULT_MESSAGE.fail,
       error: {
-        message: "Not Valid ObjectId",
+        message: ERROR_MESSAGE.invalidObjectId,
       },
     });
 
@@ -89,21 +94,21 @@ exports.updateMemoRoomTitle = async (req, res, next) => {
     await memoRoomService.updateMemoRoomTitle(memoroomId, name);
 
     res.json({
-      result: "success",
+      result: RESULT_MESSAGE.success,
     });
   } catch (err) {
-    if (err.name === "CastError") {
+    if (err.name === ERROR_TYPE.castError) {
       res.status(400).json({
-        result: "fail",
+        result: RESULT_MESSAGE.fail,
         error: {
-          message: "Invalid Data Casting",
+          message: ERROR_MESSAGE.invalidDataCasting,
         },
       });
 
       return;
     }
 
-    next(createError(500, "Invalid Server Error"));
+    next(createError(500, ERROR_MESSAGE.invalidServerError));
   }
 };
 
@@ -112,9 +117,9 @@ exports.removeMemoRoom = async (req, res, next) => {
 
   if (!ObjectId.isValid(userId) || !ObjectId.isValid(memoroomId)) {
     res.status(400).json({
-      result: "fail",
+      result: RESULT_MESSAGE.fail,
       error: {
-        message: "Not Valid ObjectId",
+        message: ERROR_MESSAGE.invalidObjectId,
       },
     });
 
@@ -128,21 +133,21 @@ exports.removeMemoRoom = async (req, res, next) => {
     );
 
     res.json({
-      result: "success",
+      result: RESULT_MESSAGE.success,
       data: newMemoRooms,
     });
   } catch (err) {
-    if (err.name === "ValidationError") {
+    if (err.name === ERROR_TYPE.validationError) {
       res.status(400).json({
-        result: "fail",
+        result: RESULT_MESSAGE.fail,
         error: {
-          message: "Validation Error",
+          message: ERROR_MESSAGE.validationError,
         },
       });
 
       return;
     }
 
-    next(createError(500, "Invalid Server Error"));
+    next(createError(500, ERROR_MESSAGE.invalidServerError));
   }
 };

@@ -3,15 +3,20 @@ const { ObjectId } = mongoose.Types;
 const createError = require("http-errors");
 
 const memoRoomDetailService = require("../services/memoRoomDetail");
+const {
+  ERROR_TYPE,
+  ERROR_MESSAGE,
+  RESULT_MESSAGE,
+} = require("../constants/responseMessage");
 
 exports.getAllMemoRoomDetail = async (req, res, next) => {
   const { userId, memoroomId } = req.params;
 
   if (!ObjectId.isValid(userId) || !ObjectId.isValid(memoroomId)) {
     res.status(400).json({
-      result: "fail",
+      result: RESULT_MESSAGE.fail,
       error: {
-        message: "Not Valid ObjectId",
+        message: ERROR_MESSAGE.invalidObjectId,
       },
     });
 
@@ -25,11 +30,11 @@ exports.getAllMemoRoomDetail = async (req, res, next) => {
     );
 
     res.json({
-      result: "success",
+      result: RESULT_MESSAGE.success,
       data: memoRoomDetail,
     });
   } catch (err) {
-    next(createError(500, "Invalid Server Error"));
+    next(createError(500, ERROR_MESSAGE.invalidServerError));
   }
 };
 
@@ -40,9 +45,9 @@ exports.addNewMemo = async (req, res, next) => {
 
   if (!ObjectId.isValid(userId) || !ObjectId.isValid(memoroomId)) {
     res.status(400).json({
-      result: "fail",
+      result: RESULT_MESSAGE.fail,
       error: {
-        message: "Not Valid ObjectId",
+        message: ERROR_MESSAGE.invalidObjectId,
       },
     });
 
@@ -61,24 +66,24 @@ exports.addNewMemo = async (req, res, next) => {
     });
 
     res.json({
-      result: "success",
+      result: RESULT_MESSAGE.success,
       data: {
         newMemo,
       },
     });
   } catch (err) {
-    if (err.name === "ValidationError") {
+    if (err.name === ERROR_TYPE.validationError) {
       res.status(400).json({
-        result: "fail",
+        result: RESULT_MESSAGE.fail,
         error: {
-          message: "Validation Error",
+          message: ERROR_MESSAGE.validationError,
         },
       });
 
       return;
     }
 
-    next(createError(500, "Invalid Server Error"));
+    next(createError(500, ERROR_MESSAGE.invalidServerError));
   }
 };
 
@@ -91,9 +96,9 @@ exports.deleteMemo = async (req, res, next) => {
     !ObjectId.isValid(memoId)
   ) {
     res.status(400).json({
-      result: "fail",
+      result: RESULT_MESSAGE.fail,
       error: {
-        message: "Not Valid ObjectId",
+        message: ERROR_MESSAGE.invalidObjectId,
       },
     });
 
@@ -104,21 +109,21 @@ exports.deleteMemo = async (req, res, next) => {
     await memoRoomDetailService.deleteMemo({ memoroomId, memoId });
 
     res.json({
-      result: "success",
+      result: RESULT_MESSAGE.success,
     });
   } catch (err) {
-    if (err.name === "ValidationError") {
+    if (err.name === ERROR_TYPE.validationError) {
       res.status(400).json({
-        result: "fail",
+        result: RESULT_MESSAGE.fail,
         error: {
-          message: "Validation Error",
+          message: ERROR_MESSAGE.validationError,
         },
       });
 
       return;
     }
 
-    next(createError(500, "Invalid Server Error"));
+    next(createError(500, ERROR_MESSAGE.invalidServerError));
   }
 };
 
@@ -132,9 +137,9 @@ exports.updateMemoText = async (req, res, next) => {
     !ObjectId.isValid(memoId)
   ) {
     res.status(400).json({
-      result: "fail",
+      result: RESULT_MESSAGE.fail,
       error: {
-        message: "Not Valid ObjectId",
+        message: ERROR_MESSAGE.invalidObjectId,
       },
     });
 
@@ -145,21 +150,21 @@ exports.updateMemoText = async (req, res, next) => {
     await memoRoomDetailService.updateMemoText({ memoId, text });
 
     res.json({
-      result: "success",
+      result: RESULT_MESSAGE.success,
     });
   } catch (err) {
-    if (err.name === "CastError") {
+    if (err.name === ERROR_TYPE.castError) {
       res.status(400).json({
-        result: "fail",
+        result: RESULT_MESSAGE.fail,
         error: {
-          message: "Invalid Data Casting",
+          message: ERROR_MESSAGE.invalidDataCasting,
         },
       });
 
       return;
     }
 
-    next(createError(500, "Invalid Server Error"));
+    next(createError(500, ERROR_MESSAGE.invalidServerError));
   }
 };
 
@@ -173,9 +178,9 @@ exports.updateMemoStyle = async (req, res, next) => {
     !ObjectId.isValid(memoId)
   ) {
     res.status(400).json({
-      result: "fail",
+      result: RESULT_MESSAGE.fail,
       error: {
-        message: "Not Valid ObjectId",
+        message: ERROR_MESSAGE.invalidObjectId,
       },
     });
 
@@ -191,7 +196,7 @@ exports.updateMemoStyle = async (req, res, next) => {
     });
 
     res.json({
-      result: "success",
+      result: RESULT_MESSAGE.success,
       data: {
         memoId,
         memoColor,
@@ -200,18 +205,18 @@ exports.updateMemoStyle = async (req, res, next) => {
       },
     });
   } catch (err) {
-    if (err.name === "CastError") {
+    if (err.name === ERROR_TYPE.castError) {
       res.status(400).json({
-        result: "fail",
+        result: RESULT_MESSAGE.fail,
         error: {
-          message: "Invalid Data Casting",
+          message: ERROR_MESSAGE.invalidDataCasting,
         },
       });
 
       return;
     }
 
-    next(createError(500, "Invalid Server Error"));
+    next(createError(500, ERROR_MESSAGE.invalidServerError));
   }
 };
 
@@ -225,9 +230,9 @@ exports.updateMemoSize = async (req, res, next) => {
     !ObjectId.isValid(memoId)
   ) {
     res.status(400).json({
-      result: "fail",
+      result: RESULT_MESSAGE.fail,
       error: {
-        message: "Not Valid ObjectId",
+        message: ERROR_MESSAGE.invalidObjectId,
       },
     });
 
@@ -242,21 +247,21 @@ exports.updateMemoSize = async (req, res, next) => {
     });
 
     res.json({
-      result: "success",
+      result: RESULT_MESSAGE.success,
     });
   } catch (err) {
-    if (err.name === "CastError") {
+    if (err.name === ERROR_TYPE.castError) {
       res.status(400).json({
-        result: "fail",
+        result: RESULT_MESSAGE.fail,
         error: {
-          message: "Invalid Data Casting",
+          message: ERROR_MESSAGE.invalidDataCasting,
         },
       });
 
       return;
     }
 
-    next(createError(500, "Invalid Server Error"));
+    next(createError(500, ERROR_MESSAGE.invalidServerError));
   }
 };
 
@@ -270,9 +275,9 @@ exports.updateMemoLocation = async (req, res, next) => {
     !ObjectId.isValid(memoId)
   ) {
     res.status(400).json({
-      result: "fail",
+      result: RESULT_MESSAGE.fail,
       error: {
-        message: "Not Valid ObjectId",
+        message: ERROR_MESSAGE.invalidObjectId,
       },
     });
 
@@ -287,21 +292,21 @@ exports.updateMemoLocation = async (req, res, next) => {
     });
 
     res.json({
-      result: "success",
+      result: RESULT_MESSAGE.success,
     });
   } catch (err) {
-    if (err.name === "CastError") {
+    if (err.name === ERROR_TYPE.castError) {
       res.status(400).json({
-        result: "fail",
+        result: RESULT_MESSAGE.fail,
         error: {
-          message: "Invalid Data Casting",
+          message: ERROR_MESSAGE.invalidDataCasting,
         },
       });
 
       return;
     }
 
-    next(createError(500, "Invalid Server Error"));
+    next(createError(500, ERROR_MESSAGE.invalidServerError));
   }
 };
 
@@ -310,9 +315,9 @@ exports.leaveMemoRoom = async (req, res, next) => {
 
   if (!ObjectId.isValid(userId) || !ObjectId.isValid(memoroomId)) {
     res.status(400).json({
-      result: "fail",
+      result: RESULT_MESSAGE.fail,
       error: {
-        message: "Not Valid ObjectId",
+        message: ERROR_MESSAGE.invalidObjectId,
       },
     });
 
@@ -326,21 +331,21 @@ exports.leaveMemoRoom = async (req, res, next) => {
     });
 
     res.json({
-      result: "success",
+      result: RESULT_MESSAGE.success,
     });
   } catch (err) {
-    if (err.name === "CastError") {
+    if (err.name === ERROR_TYPE.castError) {
       res.status(400).json({
-        result: "fail",
+        result: RESULT_MESSAGE.fail,
         error: {
-          message: "Invalid Data Casting",
+          message: ERROR_MESSAGE.invalidDataCasting,
         },
       });
 
       return;
     }
 
-    next(createError(500, "Invalid Server Error"));
+    next(createError(500, ERROR_MESSAGE.invalidServerError));
   }
 };
 
@@ -353,9 +358,9 @@ exports.addAudioFile = async (req, res, next) => {
     !ObjectId.isValid(memoId)
   ) {
     res.status(400).json({
-      result: "fail",
+      result: RESULT_MESSAGE.fail,
       error: {
-        message: "Not Valid ObjectId",
+        message: ERROR_MESSAGE.invalidObjectId,
       },
     });
 
@@ -370,24 +375,24 @@ exports.addAudioFile = async (req, res, next) => {
     });
 
     res.json({
-      result: "success",
+      result: RESULT_MESSAGE.success,
       data: {
         memoId,
         audioUrl: awsAudioUrl,
       },
     });
   } catch (err) {
-    if (err.name === "ValidationError") {
+    if (err.name === ERROR_TYPE.validationError) {
       res.status(400).json({
-        result: "fail",
+        result: RESULT_MESSAGE.fail,
         error: {
-          message: "Validation Error",
+          message: ERROR_MESSAGE.validationError,
         },
       });
 
       return;
     }
 
-    next(createError(500, "Invalid Server Error"));
+    next(createError(500, ERROR_MESSAGE.invalidServerError));
   }
 };

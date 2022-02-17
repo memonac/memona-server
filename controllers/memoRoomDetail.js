@@ -67,6 +67,17 @@ exports.addNewMemo = async (req, res, next) => {
       },
     });
   } catch (err) {
+    if (err.name === "ValidationError") {
+      res.status(400).json({
+        result: "fail",
+        error: {
+          message: "Invalid Mongoose Validation",
+        },
+      });
+
+      return;
+    }
+
     next(createError(500, "Invalid Server Error"));
   }
 };
@@ -96,6 +107,17 @@ exports.deleteMemo = async (req, res, next) => {
       result: "success",
     });
   } catch (err) {
+    if (err.name === "ValidationError") {
+      res.status(400).json({
+        result: "fail",
+        error: {
+          message: "Invalid Mongoose Validation",
+        },
+      });
+
+      return;
+    }
+
     next(createError(500, "Invalid Server Error"));
   }
 };
@@ -126,6 +148,17 @@ exports.updateMemoText = async (req, res, next) => {
       result: "success",
     });
   } catch (err) {
+    if (err.name === "CastError") {
+      res.status(400).json({
+        result: "fail",
+        error: {
+          message: "Invalid Data Casting",
+        },
+      });
+
+      return;
+    }
+
     next(createError(500, "Invalid Server Error"));
   }
 };
@@ -167,6 +200,17 @@ exports.updateMemoStyle = async (req, res, next) => {
       },
     });
   } catch (err) {
+    if (err.name === "CastError") {
+      res.status(400).json({
+        result: "fail",
+        error: {
+          message: "Invalid Data Casting",
+        },
+      });
+
+      return;
+    }
+
     next(createError(500, "Invalid Server Error"));
   }
 };
@@ -201,6 +245,17 @@ exports.updateMemoSize = async (req, res, next) => {
       result: "success",
     });
   } catch (err) {
+    if (err.name === "CastError") {
+      res.status(400).json({
+        result: "fail",
+        error: {
+          message: "Invalid Data Casting",
+        },
+      });
+
+      return;
+    }
+
     next(createError(500, "Invalid Server Error"));
   }
 };
@@ -235,6 +290,17 @@ exports.updateMemoLocation = async (req, res, next) => {
       result: "success",
     });
   } catch (err) {
+    if (err.name === "CastError") {
+      res.status(400).json({
+        result: "fail",
+        error: {
+          message: "Invalid Data Casting",
+        },
+      });
+
+      return;
+    }
+
     next(createError(500, "Invalid Server Error"));
   }
 };
@@ -263,6 +329,17 @@ exports.leaveMemoRoom = async (req, res, next) => {
       result: "success",
     });
   } catch (err) {
+    if (err.name === "CastError") {
+      res.status(400).json({
+        result: "fail",
+        error: {
+          message: "Invalid Data Casting",
+        },
+      });
+
+      return;
+    }
+
     next(createError(500, "Invalid Server Error"));
   }
 };
@@ -300,6 +377,17 @@ exports.addAudioFile = async (req, res, next) => {
       },
     });
   } catch (err) {
+    if (err.name === "ValidationError") {
+      res.status(400).json({
+        result: "fail",
+        error: {
+          message: "Invalid Mongoose Validation",
+        },
+      });
+
+      return;
+    }
+
     next(createError(500, "Invalid Server Error"));
   }
 };

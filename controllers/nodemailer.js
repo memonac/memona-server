@@ -33,8 +33,8 @@ exports.postSendMail = async (req, res, next) => {
       subject: "memona C에서 당신을 초대합니다",
       html: `<div
       style='
-      text-align: center; 
-      width: 50%; 
+      text-align: center;
+      width: 50%;
       height: 60%;
       margin: 15%;
       padding: 20px;

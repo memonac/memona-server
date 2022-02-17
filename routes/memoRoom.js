@@ -50,7 +50,6 @@ router.post(
   "/:userId/memorooms/:memoroomId/invite",
   verifyToken,
   validator(checkEmail),
-  checkEmail,
   nodemailerController.postSendMail
 );
 router.post(

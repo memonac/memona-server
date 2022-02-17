@@ -1,10 +1,12 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
+const { SCHEMA_MESSAGE } = require("../constants/dataValidationMessage");
+
 const MemoRoomSchema = new Schema({
   owner: {
     type: Schema.Types.ObjectId,
-    required: [true, "owner must be required"],
+    required: [true, SCHEMA_MESSAGE.ownerError],
   },
   participants: [
     {
@@ -20,11 +22,11 @@ const MemoRoomSchema = new Schema({
   ],
   slackToken: {
     type: String,
-    unique: [true, "slackToken must be unique"],
+    unique: [true, SCHEMA_MESSAGE.slackTokenError],
   },
   name: {
     type: String,
-    required: [true, "name must be required"],
+    required: [true, SCHEMA_MESSAGE.roomNameError],
   },
 });
 

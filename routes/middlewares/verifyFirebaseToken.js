@@ -1,9 +1,15 @@
 const createError = require("http-errors");
 
 const { authenication } = require("../../configs/firebase");
+const { TOKEN } = require("../../constants/tokenInfo");
+const {
+  ERROR_TYPE,
+  ERROR_MESSAGE,
+  RESULT_MESSAGE,
+} = require("../../constants/responseMessage");
 
 const verifyFirebaseToken = async (req, res, next) => {
-  const firebaseToken = req.headers["authorization"].split(" ")[1];
+  const firebaseToken = req.headers[TOKEN.reqHeader].split(" ")[1];
 
   try {
     const { name, email } = await authenication.verifyIdToken(firebaseToken);
@@ -14,29 +20,29 @@ const verifyFirebaseToken = async (req, res, next) => {
 
     return;
   } catch (err) {
-    if (err.code === "auth/argument-error") {
+    if (err.code === ERROR_TYPE.authError) {
       res.status(400).json({
-        result: "fail",
+        result: RESULT_MESSAGE.fail,
         error: {
-          message: "Invalid Firebase Token",
+          message: ERROR_MESSAGE.invalidFirebaseToken,
         },
       });
 
       return;
     }
 
-    if (err.code === "auth/id-token-expired") {
+    if (err.code === ERROR_TYPE.firebaseTokenExpiredError) {
       res.status(400).json({
-        result: "fail",
+        result: RESULT_MESSAGE.fail,
         error: {
-          message: "Expired Firebase Token",
+          message: ERROR_MESSAGE.expiredFirebaseToken,
         },
       });
 
       return;
     }
 
-    next(createError(500, "Invalid Server Error"));
+    next(createError(500, ERROR_MESSAGE.invalidServerError));
   }
 };
 

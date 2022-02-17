@@ -2,6 +2,12 @@ const createError = require("http-errors");
 const jwt = require("jsonwebtoken");
 
 const userService = require("../services/auth");
+const { TOKEN } = require("../constants/tokenInfo");
+const {
+  ERROR_TYPE,
+  ERROR_MESSAGE,
+  RESULT_MESSAGE,
+} = require("../constants/responseMessage");
 
 exports.getLogin = async (req, res, next) => {
   const { userInfo } = res.locals;
@@ -14,36 +20,36 @@ exports.getLogin = async (req, res, next) => {
     const { id, name } = await userService.createUser(userInfo);
 
     const accessToken = await jwt.sign(userInfo, process.env.SECRET_KEY, {
-      expiresIn: "2h",
+      expiresIn: TOKEN.accessTokenLimit,
     });
 
     const refreshToken = await jwt.sign(userInfo, process.env.SECRET_KEY, {
-      expiresIn: "7d",
+      expiresIn: TOKEN.refreshTokenLimit,
     });
 
-    res.cookie("accessToken", accessToken, cookieOptions);
-    res.cookie("refreshToken", refreshToken, cookieOptions);
+    res.cookie(TOKEN.accessToken, accessToken, cookieOptions);
+    res.cookie(TOKEN.refreshToken, refreshToken, cookieOptions);
 
     res.json({
-      result: "success",
+      result: RESULT_MESSAGE.success,
       data: {
         userId: id,
         name,
       },
     });
   } catch (err) {
-    if (err.name === "ValidationError") {
+    if (err.name === ERROR_TYPE.validationError) {
       res.status(400).json({
-        result: "fail",
+        result: RESULT_MESSAGE.fail,
         error: {
-          message: "DataBase Error",
+          message: ERROR_MESSAGE.dataBaseError,
         },
       });
 
       return;
     }
 
-    next(createError(500, "Invalid Server Error"));
+    next(createError(500, ERROR_MESSAGE.invalidServerError));
   }
 };
 
@@ -60,18 +66,18 @@ exports.postSignup = async (req, res, next) => {
     const { id } = await userService.createUser(userInfo);
 
     const accessToken = await jwt.sign(userInfo, process.env.SECRET_KEY, {
-      expiresIn: "2h",
+      expiresIn: TOKEN.accessTokenLimit,
     });
 
     const refreshToken = await jwt.sign(userInfo, process.env.SECRET_KEY, {
-      expiresIn: "7d",
+      expiresIn: TOKEN.refreshTokenLimit,
     });
 
-    res.cookie("accessToken", accessToken, cookieOptions);
-    res.cookie("refreshToken", refreshToken, cookieOptions);
+    res.cookie(TOKEN.accessToken, accessToken, cookieOptions);
+    res.cookie(TOKEN.refreshToken, refreshToken, cookieOptions);
 
     res.json({
-      result: "success",
+      result: RESULT_MESSAGE.success,
       data: {
         userId: id,
         email,
@@ -79,30 +85,30 @@ exports.postSignup = async (req, res, next) => {
       },
     });
   } catch (err) {
-    if (err.name === "ValidationError") {
+    if (err.name === ERROR_TYPE.validationError) {
       res.status(400).json({
-        result: "fail",
+        result: RESULT_MESSAGE.fail,
         error: {
-          message: "DataBase Error",
+          message: ERROR_MESSAGE.dataBaseError,
         },
       });
 
       return;
     }
 
-    next(createError(500, "Invalid Server Error"));
+    next(createError(500, ERROR_MESSAGE.invalidServerError));
   }
 };
 
 exports.getLogout = (req, res, next) => {
   try {
-    res.clearCookie("accessToken");
-    res.clearCookie("refreshToken");
+    res.clearCookie(TOKEN.accessToken);
+    res.clearCookie(TOKEN.refreshToken);
 
     res.json({
-      result: "success",
+      result: RESULT_MESSAGE.success,
     });
   } catch (err) {
-    next(createError(500, "Invalid Server Error"));
+    next(createError(500, ERROR_MESSAGE.invalidServerError));
   }
 };

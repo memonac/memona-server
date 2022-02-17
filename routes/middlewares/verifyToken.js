@@ -1,5 +1,11 @@
-const createError = require("http-errors");
 const jwt = require("jsonwebtoken");
+
+const { TOKEN } = require("../../constants/tokenInfo");
+const {
+  ERROR_TYPE,
+  ERROR_MESSAGE,
+  RESULT_MESSAGE,
+} = require("../../constants/responseMessage");
 
 const verifyToken = (req, res, next) => {
   const { accessToken, refreshToken } = req.cookies;
@@ -13,7 +19,7 @@ const verifyToken = (req, res, next) => {
 
     next();
   } catch (err) {
-    if (err.message === "jwt expired") {
+    if (err.message === ERROR_TYPE.expiredJWT) {
       try {
         const decoded = jwt.verify(refreshToken, process.env.SECRET_KEY);
 
@@ -22,31 +28,31 @@ const verifyToken = (req, res, next) => {
         const newAccessToken = jwt.sign(
           { email, name },
           process.env.SECRET_KEY,
-          { expiresIn: "2h" }
+          { expiresIn: TOKEN.accessTokenLimit }
         );
 
-        res.cookie("accessToken", newAccessToken, cookieOptions);
+        res.cookie(TOKEN.accessToken, newAccessToken, cookieOptions);
 
         next();
 
         return;
       } catch (err) {
-        if (err.message === "jwt malformed") {
+        if (err.message === ERROR_TYPE.malformedJWT) {
           res.status(400).json({
-            result: "fail",
+            result: RESULT_MESSAGE.fail,
             error: {
-              message: "Invaild Verify Token",
+              message: ERROR_MESSAGE.invalidToken,
             },
           });
 
           return;
         }
 
-        if (err.message === "jwt expired") {
+        if (err.message === ERROR_TYPE.expiredJWT) {
           res.status(400).json({
-            result: "fail",
+            result: RESULT_MESSAGE.fail,
             error: {
-              message: "Expired Token",
+              message: ERROR_MESSAGE.expiredToken,
             },
           });
 

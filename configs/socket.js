@@ -1,5 +1,7 @@
 const { Server } = require("socket.io");
+
 const chatService = require("../services/chat");
+const { SOCKET_EVENT, SOCKET_SPACE } = require("../constants/socket");
 
 module.exports = function createSocket(server, app) {
   const io = new Server(server, {
@@ -8,24 +10,23 @@ module.exports = function createSocket(server, app) {
     },
   });
 
-  const chatSpace = io.of("/chat");
-  const memoSpace = io.of("/memo");
+  const chatSpace = io.of(SOCKET_SPACE.chat);
+  const memoSpace = io.of(SOCKET_SPACE.memo);
 
-  chatSpace.on("connection", (socket) => {
-    socket.on("join room", (userId, userName, roomId) => {
+  chatSpace.on(SOCKET_EVENT.connection, (socket) => {
+    socket.on(SOCKET_EVENT.joinRoom, (userId, userName, roomId) => {
       socket.userId = userId;
       socket.userName = userName;
       socket.roomId = roomId;
 
       socket.join(roomId);
-      socket.to(roomId).emit("join room", userName);
     });
 
-    socket.on("leave room", (roomId) => {
+    socket.on(SOCKET_EVENT.leaveRoom, (roomId) => {
       socket.leave(roomId);
     });
 
-    socket.on("send message", async (message, date) => {
+    socket.on(SOCKET_EVENT.sendMessage, async (message, date) => {
       const chat = await chatService.addChat({
         roomId: socket.roomId,
         userId: socket.userId,
@@ -37,7 +38,7 @@ module.exports = function createSocket(server, app) {
       chatSpace
         .to(socket.roomId)
         .emit(
-          "receive message",
+          SOCKET_EVENT.receiveMessage,
           socket.userId,
           socket.userName,
           message,
@@ -47,58 +48,67 @@ module.exports = function createSocket(server, app) {
     });
   });
 
-  memoSpace.on("connection", (socket) => {
-    socket.on("join room", (userId, userName, roomId) => {
+  memoSpace.on(SOCKET_EVENT.connection, (socket) => {
+    socket.on(SOCKET_EVENT.joinRoom, (userId, userName, roomId) => {
       socket.userId = userId;
       socket.userName = userName;
       socket.roomId = roomId;
 
       socket.join(roomId);
-      socket.to(roomId).emit("join room", userName);
     });
 
-    socket.on("leave room", (roomId) => {
+    socket.on(SOCKET_EVENT.leaveRoom, (roomId) => {
       socket.leave(roomId);
     });
 
-    socket.on("withdraw room", async (userId) => {
-      memoSpace.to(socket.roomId).emit("withdraw room", userId);
+    socket.on(SOCKET_EVENT.withdrawRoom, async (userId) => {
+      memoSpace.to(socket.roomId).emit(SOCKET_EVENT.withdrawRoom, userId);
     });
 
-    socket.on("update participants", async (participants, memoroomId) => {
-      memoSpace
-        .to(memoroomId)
-        .emit("update participants", participants, memoroomId);
+    socket.on(
+      SOCKET_EVENT.updateParticipants,
+      async (participants, memoroomId) => {
+        memoSpace
+          .to(memoroomId)
+          .emit(SOCKET_EVENT.updateParticipants, participants, memoroomId);
+      }
+    );
+
+    socket.on(SOCKET_EVENT.memoAdd, async (newMemo) => {
+      socket.to(socket.roomId).emit(SOCKET_EVENT.memoAdd, newMemo);
     });
 
-    socket.on("memo/location", async (memoId, left, top) => {
-      socket.to(socket.roomId).emit("memo/location", memoId, left, top);
-    });
-
-    socket.on("memo/delete", async (memoId) => {
-      socket.to(socket.roomId).emit("memo/delete", memoId);
-    });
-
-    socket.on("memo/size", async (memoId, width, height) => {
-      socket.to(socket.roomId).emit("memo/size", memoId, width, height);
-    });
-
-    socket.on("memo/text", async (memoId, text) => {
-      socket.to(socket.roomId).emit("memo/text", memoId, text);
-    });
-
-    socket.on("memo/style", async (memoId, memoColor, alarmDate, tags) => {
+    socket.on(SOCKET_EVENT.memoLocation, async (memoId, left, top) => {
       socket
         .to(socket.roomId)
-        .emit("memo/style", memoId, memoColor, alarmDate, tags);
+        .emit(SOCKET_EVENT.memoLocation, memoId, left, top);
     });
 
-    socket.on("memo/add", async (newMemo) => {
-      socket.to(socket.roomId).emit("memo/add", newMemo);
+    socket.on(SOCKET_EVENT.memoDelete, async (memoId) => {
+      socket.to(socket.roomId).emit(SOCKET_EVENT.memoDelete, memoId);
     });
 
-    socket.on("memo/audio", async (memoId, audioUrl) => {
-      socket.to(socket.roomId).emit("memo/audio", memoId, audioUrl);
+    socket.on(SOCKET_EVENT.memoSize, async (memoId, width, height) => {
+      socket
+        .to(socket.roomId)
+        .emit(SOCKET_EVENT.memoSize, memoId, width, height);
+    });
+
+    socket.on(SOCKET_EVENT.memoText, async (memoId, text) => {
+      socket.to(socket.roomId).emit(SOCKET_EVENT.memoText, memoId, text);
+    });
+
+    socket.on(
+      SOCKET_EVENT.memoStyle,
+      async (memoId, memoColor, alarmDate, tags) => {
+        socket
+          .to(socket.roomId)
+          .emit(SOCKET_EVENT.memoStyle, memoId, memoColor, alarmDate, tags);
+      }
+    );
+
+    socket.on(SOCKET_EVENT.memoAudio, async (memoId, audioUrl) => {
+      socket.to(socket.roomId).emit(SOCKET_EVENT.memoAudio, memoId, audioUrl);
     });
   });
 };

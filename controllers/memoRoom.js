@@ -55,6 +55,17 @@ exports.addNewMemoRoom = async (req, res, next) => {
       },
     });
   } catch (err) {
+    if (err.name === "ValidationError") {
+      res.status(400).json({
+        result: "fail",
+        error: {
+          message: "Invalid Mongoose Validation",
+        },
+      });
+
+      return;
+    }
+
     next(createError(500, "Invalid Server Error"));
   }
 };
@@ -81,6 +92,17 @@ exports.updateMemoRoomTitle = async (req, res, next) => {
       result: "success",
     });
   } catch (err) {
+    if (err.name === "CastError") {
+      res.status(400).json({
+        result: "fail",
+        error: {
+          message: "Invalid Data Casting",
+        },
+      });
+
+      return;
+    }
+
     next(createError(500, "Invalid Server Error"));
   }
 };
@@ -110,6 +132,17 @@ exports.removeMemoRoom = async (req, res, next) => {
       data: newMemoRooms,
     });
   } catch (err) {
+    if (err.name === "ValidationError") {
+      res.status(400).json({
+        result: "fail",
+        error: {
+          message: "Validation Error",
+        },
+      });
+
+      return;
+    }
+
     next(createError(500, "Invalid Server Error"));
   }
 };

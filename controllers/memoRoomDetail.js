@@ -71,7 +71,7 @@ exports.addNewMemo = async (req, res, next) => {
       res.status(400).json({
         result: "fail",
         error: {
-          message: "Invalid Mongoose Validation",
+          message: "Validation Error",
         },
       });
 
@@ -111,7 +111,7 @@ exports.deleteMemo = async (req, res, next) => {
       res.status(400).json({
         result: "fail",
         error: {
-          message: "Invalid Mongoose Validation",
+          message: "Validation Error",
         },
       });
 
@@ -381,7 +381,7 @@ exports.addAudioFile = async (req, res, next) => {
       res.status(400).json({
         result: "fail",
         error: {
-          message: "Invalid Mongoose Validation",
+          message: "Validation Error",
         },
       });
 

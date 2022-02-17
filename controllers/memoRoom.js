@@ -136,7 +136,7 @@ exports.removeMemoRoom = async (req, res, next) => {
       res.status(400).json({
         result: "fail",
         error: {
-          message: "Invalid Mongoose Validation",
+          message: "Validation Error",
         },
       });
 

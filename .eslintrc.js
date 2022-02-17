@@ -11,9 +11,10 @@ module.exports = {
   },
   plugins: ["prettier"],
   rules: {
-    "prettier/prettier": "warn",
+    "prettier/prettier": "error",
     "no-var": "error",
     "no-unused-vars": "warn",
+    "no-empty": "warn",
     "func-style": ["error", "declaration", { allowArrowFunctions: true }],
   },
 };

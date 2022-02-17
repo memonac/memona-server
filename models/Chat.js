@@ -1,29 +1,36 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
+const { SCHEMA_MESSAGE } = require("../constants/dataValidationMessage");
+
+const Conversation = new Schema({
+  user: {
+    id: {
+      type: Schema.Types.ObjectId,
+      required: [true, SCHEMA_MESSAGE.userIdError],
+    },
+    name: {
+      type: String,
+      required: [true, SCHEMA_MESSAGE.userNameError],
+    },
+  },
+  message: {
+    type: String,
+    required: [true, SCHEMA_MESSAGE.messageError],
+  },
+  sendDate: {
+    type: Date,
+    required: [true, SCHEMA_MESSAGE.sendDateError],
+  },
+});
+
 const ChatSchema = new Schema({
   room: {
     type: Schema.Types.ObjectId,
     ref: "MemoRoom",
-    required: [true, "RoomId must be required."],
+    required: [true, SCHEMA_MESSAGE.roomIdError],
   },
-  conversation: [
-    {
-      user: {
-        type: Schema.Types.ObjectId,
-        ref: "User",
-        required: [true, "User must be required."],
-      },
-      comment: {
-        type: String,
-        required: [true, "Comment must be required."],
-      },
-      time: {
-        type: Date,
-        default: new Date(),
-      },
-    },
-  ],
+  conversation: [Conversation],
 });
 
 module.exports = mongoose.model("Chat", ChatSchema);

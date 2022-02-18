@@ -54,7 +54,6 @@ exports.getDetailInfo = async (userId, memoroomId) => {
     owner: memoRooms.owner,
     participants: participants,
     memos: refinedMemos,
-    slackToken: memoRooms.slackToken,
     name: memoRooms.name,
     chats: chatConverstions,
     chatLastIndex,

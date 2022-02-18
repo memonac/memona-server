@@ -20,10 +20,6 @@ const MemoRoomSchema = new Schema({
       ref: "Memo",
     },
   ],
-  slackToken: {
-    type: String,
-    unique: [true, SCHEMA_MESSAGE.slackTokenError],
-  },
   name: {
     type: String,
     required: [true, SCHEMA_MESSAGE.roomNameError],

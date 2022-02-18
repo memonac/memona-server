@@ -71,6 +71,7 @@ exports.addNewMemoRoom = async (req, res, next) => {
       return;
     }
 
+    console.log(err.stack);
     next(createError(500, ERROR_MESSAGE.invalidServerError));
   }
 };

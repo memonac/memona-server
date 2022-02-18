@@ -42,8 +42,9 @@ exports.postSendMail = async (req, res, next) => {
       width: 50%;
       height: 60%;
       margin: 15%;
-      padding: 20px;
-      box-shadow: 1px 1px 3px 0px #999;
+      padding: 30px;
+      box-shadow: 1px 1px 3px 0px #999999;
+      background: #fff1bd;
       text-align: center;
       '>
       <h2>WELCOME🥳</h2>

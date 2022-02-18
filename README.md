@@ -1,6 +1,6 @@
 # **🍋 MEMONA-C**
 
-<img src="./readme.asset/intro.png" width="900px" alt="intro">
+<img src="./readme.asset/intro.png" width="1000px" alt="intro">
 <br>
 <br>
 쌓여가는 포스트잇에 내가 뭘 적었고, 어디에 붙여놨는지 기억이 안났던 경험이 있지 않나요?<br>
@@ -55,7 +55,7 @@
 
 # **🔨 기술 스택**
 
-<img src="./readme.asset/techSpec.png" width="900px" alt="intro">
+<img src="./readme.asset/techSpec.png" width="1000px" alt="intro">
 
 <br>
 <br>
@@ -162,37 +162,37 @@ AWS_BUCKET_NAME=<YOUR_AWS_S3_BUCKET_NAME>
 **1. Socket & DB 통신**
 <br>
 <br>
-<img src="./readme.asset/axios1.png" width="900px" alt="axios1">
+<img src="./readme.asset/axios1.png" width="1000px" alt="axios1">
 <br>
-<img src="./readme.asset/axios2.png" width="900px" alt="axios2">
+<img src="./readme.asset/axios2.png" width="1000px" alt="axios2">
 <br>
 <br>
 **2. AWS S3 로직 처리 위치**
 <br>
 <br>
-<img src="./readme.asset/awsS3.png" width="900px" alt="awsS3">
+<img src="./readme.asset/awsS3.png" width="1000px" alt="awsS3">
 <br>
 <br>
 **3. 초대 메일 인증 처리**
 <br>
 <br>
-<img src="./readme.asset/nodemailer.png" width="900px" alt="nodemailer">
+<img src="./readme.asset/nodemailer.png" width="1000px" alt="nodemailer">
 <br>
 <br>
 <br>
 
 # **🔧 보완해야 하는 부분**
 
-<img src="./readme.asset/improvement.png" width="900px" alt="improvement">
+<img src="./readme.asset/improvement.png" width="1000px" alt="improvement">
 <br>
-<img src="./readme.asset/improvement2.png" width="900px" alt="improvement2">
+<img src="./readme.asset/improvement2.png" width="1000px" alt="improvement2">
 <br>
 <br>
 <br>
 
 # **🎤 소감**
 
-<img src="./readme.asset/review.png" width="900px" alt="review">
+<img src="./readme.asset/review.png" width="1000px" alt="review">
 <br>
 <br>
 <br>

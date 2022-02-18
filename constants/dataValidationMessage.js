@@ -11,7 +11,6 @@ exports.SCHEMA_MESSAGE = {
   locationError: "Location must be required.",
   sizeError: "Size must be required.",
   colorError: "Color must be required.",
-  slackTokenError: "SlackToken must be unique",
   roomNameError: "Name must be required",
 };
 

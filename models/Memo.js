@@ -37,7 +37,7 @@ const MemoSchema = new Schema({
   tags: [
     {
       type: String,
-      unique: true,
+      unique: false,
     },
   ],
 });

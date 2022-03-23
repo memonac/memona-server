@@ -7,7 +7,7 @@ const app = require("../app");
 const User = require("../models/User");
 const MemoRoom = require("../models/MemoRoom");
 
-describe.only("memoRoom test", function () {
+describe("memoRoom test", function () {
   this.timeout(10000);
 
   const mongoose = require("mongoose");
@@ -159,7 +159,6 @@ describe.only("memoRoom test", function () {
         name: "Test Room",
       });
       memoRoomId = memoRoom._id;
-      console.log(memoRoomId);
     });
 
     after(async () => {

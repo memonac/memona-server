@@ -5,7 +5,6 @@ const jwt = require("jsonwebtoken");
 
 const app = require("../app");
 const User = require("../models/User");
-const { TOKEN } = require("../constants/tokenInfo");
 const MemoRoom = require("../models/MemoRoom");
 
 describe("Nodemailer test", function () {
@@ -63,7 +62,7 @@ describe("Nodemailer test", function () {
           `accessToken=${accessToken};refreshToken=${refreshToken}`,
         ])
         .type("application/json")
-        .send({ email: "leesuin212@naver.com" });
+        .send({ email: process.env.INVITEE_EMAIL });
 
       const result = response.body.result;
 
@@ -115,7 +114,7 @@ describe("Nodemailer test", function () {
 
       memoroomId = memoRoom._id;
       invitedToken = jwt.sign(
-        { email: "leesuin212@naver.com" },
+        { email: process.env.INVITEE_EMAIL },
         process.env.SECRET_KEY
       );
     });
@@ -138,7 +137,7 @@ describe("Nodemailer test", function () {
       expect(response.body.result).to.equal("success");
       expect(response.body.data).to.exist;
 
-      const invitee = await User.findOne({ email: "leesuin212@naver.com" });
+      const invitee = await User.findOne({ email: process.env.INVITEE_EMAIL });
 
       const inviteeId = invitee._id;
       const participants = response.body.data.participants;

@@ -216,7 +216,33 @@ describe.only("Memo test", function () {
       done();
     });
 
-    it("02-3. should response with success when updating memo style", (done) => {
+    it("02-3. should response with success when updating memo text", (done) => {
+      request(app)
+        .put(`/users/${userId}/memorooms/${memoRoomId}/memos/${memoId}/text`)
+        .set("Cookie", [
+          `accessToken=${accessToken};refreshToken=${refreshToken}`,
+        ])
+        .type("application/json")
+        .send({
+          text: "This is mock content for test",
+        })
+        .expect(200)
+        .end(async (err, res) => {
+          if (err) {
+            done(err);
+            return;
+          }
+
+          expect(res.body.result).to.eql("success");
+
+          const updatedMemo = await Memo.findById(memoId).lean().exec();
+          expect(updatedMemo.content).to.eql("This is mock content for test");
+        });
+
+      done();
+    });
+
+    it("02-4. should response with success when updating memo style", (done) => {
       request(app)
         .put(`/users/${userId}/memorooms/${memoRoomId}/memos/${memoId}/style`)
         .set("Cookie", [
@@ -247,7 +273,7 @@ describe.only("Memo test", function () {
       done();
     });
 
-    it("02-4. should response with error if invalid memoId", (done) => {
+    it("02-5. should response with error if invalid memoId", (done) => {
       request(app)
         .put(
           `/users/${userId}/memorooms/${memoRoomId}/memos/wrongObjectId/style`
@@ -315,9 +341,7 @@ describe.only("Memo test", function () {
 
     it("03-1. should response with success when removing a memo", (done) => {
       request(app)
-        .delete(
-          `/users/${userId}/memorooms/${memoRoomId}/memos/${memoId}`
-        )
+        .delete(`/users/${userId}/memorooms/${memoRoomId}/memos/${memoId}`)
         .set("Cookie", [
           `accessToken=${accessToken};refreshToken=${refreshToken}`,
         ])
@@ -334,7 +358,9 @@ describe.only("Memo test", function () {
           const removedMemo = await Memo.findById(memoId).lean().exec();
           expect(removedMemo).to.not.exist;
 
-          const targetMemoroom = await MemoRoom.findById(memoRoomId).lean().exec();
+          const targetMemoroom = await MemoRoom.findById(memoRoomId)
+            .lean()
+            .exec();
           expect(targetMemoroom.memos).to.not.include(memoId);
         });
 
@@ -343,9 +369,7 @@ describe.only("Memo test", function () {
 
     it("03-2. should response with error if invalid memoId", (done) => {
       request(app)
-        .delete(
-          `/users/${userId}/memorooms/${memoRoomId}/memos/wrongObjectId`
-        )
+        .delete(`/users/${userId}/memorooms/${memoRoomId}/memos/wrongObjectId`)
         .set("Cookie", [
           `accessToken=${accessToken};refreshToken=${refreshToken}`,
         ])

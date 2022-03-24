@@ -300,6 +300,34 @@ describe.only("Memo test", function () {
 
       done();
     });
+
+    it("02-6. should response with error if a wrong updated value is given", (done) => {
+      request(app)
+        .put(
+          `/users/${userId}/memorooms/${memoRoomId}/memos/${memoId}/style`
+        )
+        .set("Cookie", [
+          `accessToken=${accessToken};refreshToken=${refreshToken}`,
+        ])
+        .type("application/json")
+        .send({
+          memoColor: "#c9e4c5",
+          memoTags: 1000,
+        })
+        .expect(400)
+        .end(async (err, res) => {
+          if (err) {
+            done(err);
+            return;
+          }
+
+          expect(res.body.data).to.not.exist;
+          expect(res.body.result).to.eql("fail");
+          expect(res.body.error.message).to.eql("Memo Tags should be string");
+        });
+
+      done();
+    });
   });
 
   describe("03. Delete memo", () => {

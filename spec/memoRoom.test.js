@@ -79,7 +79,7 @@ describe("memoRoom test", function () {
 
     before(async () => {
       user = await User.create({
-        email: "test@gameil.com",
+        email: "test@gmail.com",
         name: "LeeTest",
       });
 
@@ -145,7 +145,7 @@ describe("memoRoom test", function () {
 
     before(async () => {
       user = await User.create({
-        email: "test@gameil.com",
+        email: "test@gmail.com",
         name: "LeeTest",
       });
 

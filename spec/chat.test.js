@@ -8,7 +8,7 @@ const User = require("../models/User");
 const MemoRoom = require("../models/MemoRoom");
 const Chat = require("../models/Chat");
 
-describe.only("chat test", function () {
+describe("chat test", function () {
   this.timeout(10000);
 
   let userId;

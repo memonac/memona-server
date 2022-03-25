@@ -8,7 +8,7 @@ const User = require("../models/User");
 const MemoRoom = require("../models/MemoRoom");
 const Memo = require("../models/Memo");
 
-describe.only("Memo test", function () {
+describe("Memo test", function () {
   this.timeout(10000);
 
   const mongoose = require("mongoose");
@@ -303,9 +303,7 @@ describe.only("Memo test", function () {
 
     it("02-6. should response with error if a wrong updated value is given", (done) => {
       request(app)
-        .put(
-          `/users/${userId}/memorooms/${memoRoomId}/memos/${memoId}/style`
-        )
+        .put(`/users/${userId}/memorooms/${memoRoomId}/memos/${memoId}/style`)
         .set("Cookie", [
           `accessToken=${accessToken};refreshToken=${refreshToken}`,
         ])
